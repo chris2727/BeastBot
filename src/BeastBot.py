@@ -69,6 +69,8 @@ def main():
             command = command.strip()
             if command == "about":
                 ircSay(username, conf['aboutmessage'], irc)
+            if command == "help":
+                ircSay(username, "Still in construction", irc)
             if command == "nick":
                 Admins = conf['admins'].split(" ")
                 for admin in Admins:
