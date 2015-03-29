@@ -40,6 +40,14 @@ def main():
 	if line:
 		print line
 	splitline = line.split(" :")
+	try: message = splitline[1]
+	except Exception: pass
+	try: username = line.split("!")[0].replace(':', '')
+	except Exception: pass
+	try: msgto = line.split(" ")[2]
+	except Exception: pass
+	try: command = message[0]
+	except Exception: pass
 	if splitline[0] == "PING":
 		pong = "PONG %s" %splitline[1]
 		irc.send(pong)
@@ -48,6 +56,8 @@ def main():
 		splitchannels = conf['channels'].split(" ")
 		for chan in splitchannels:
 			irc.send("JOIN %s\n" %(chan))
+	if re.match(conf['cominit']+"about", command):
+		ircSay(username, "I was created by the gods: chris1, HTH, and Spacecow.")
 
 def CreateSocket():
 	conf = getConfig()
@@ -62,6 +72,24 @@ def getConfig():
 	config.read('conf/beastbot.conf')
 	conf = dict(config.items('Main'))
 	return conf
+
+###############
+#IRC Functions#
+###############
+def ircSay(to, msg, irc): #to=message to, msg=message to send, irc=socket
+	irc.send("PRIVMSG %s :%s\n" %to, msg))
+
+def ircJoin(channel, irc): #channel=channel to join, irc=socket
+	irc.send("JOIN %s\n" %(channel))
+
+def ircPART(channel, irc): #channel=channel to part, irc=socket
+	irc.send("PART %s\n" %(channel))
+
+def ircNick(newnick, irc): #newnick=New nickname for the bot, irc=socket
+	irc.send("NICK %s\n" %(newnick))
+
+
+
 
 if __name__ == "__main__":
     main()
