@@ -28,6 +28,7 @@ import ConfigParser
 import re
 import urllib
 import json
+import time
 
 def main():
     irc = CreateSocket()
@@ -60,44 +61,44 @@ def main():
         if splitline[0] == "PING":
             pong = "PONG %s" % splitline[1]
             irc.send(pong)
-        if re.match(":r2d2.evilzone.org 001 "+conf['nick']+" :Welcome", line):
-            splitchannels = conf['channels'].split(" ")
-            for chan in splitchannels:
-                irc.send("JOIN %s\n" % (chan))
-        if messagechars[0] == conf['cominit']:
+        elif messagechars[0] == conf['cominit']:
             command = command[1:]
             command = command.strip()
             if command == "about":
                 ircSay(username, conf['aboutmessage'], irc)
-            if command == "help":
+            elif command == "help":
                 ircSay(username, "Still in construction", irc)
-            if command == "nick":
-                Admins = conf['admins'].split(" ")
-                for admin in Admins:
-                    if username == admin:
+            elif command == "nick":
+                if username in conf['admins'].split(" "):
+                    if (isRegged(username, irc)):
                         ircNick(message[1], irc)
-            if command == "join":
-                Admins = conf['admins'].split(" ")
-                for admin in Admins:
-                    if username == admin:
+            elif command == "join":
+                if username in conf['admins'].split(" "):
+                    if (isRegged(username, irc)):
                         ircJoin(message[1], irc)
-            if command == "part":
-                Admins = conf['admins'].split(" ")
-                for admin in Admins:
-                    if username == admin:
+            elif command == "part":
+                if username in conf['admins'].split(" "):
+                    if (isRegged(username, irc)):
                         ircPart(message[1], irc)
-            if command == "joinmain":
-                splitchannels = conf['channels'].split(" ")
-                for chan in splitchannels:
-                    ircJoin(chan, irc)
-            if command == "reload":
-                Admins = conf['admins'].split(" ")
-                for admin in Admins:
-                    if username == admin:
+            elif command == "joinmain":
+                if username in conf['admins'].split(" "):
+                    if (isRegged(username, irc)):
+                        splitchannels = conf['channels'].split(" ")
+                        for chan in splitchannels:
+                            ircJoin(chan, irc)
+            elif command == "reload":
+                if username in conf['admins'].split(" "):
+                    if (isRegged(username, irc)):
                         conf = getConfig()
                         ircSay(msgto, "Configuration Reloaded...", irc)
-            if command == "urban":
-                print "Received command"
+            elif command == "quit":
+                if username in conf['admins'].split(" "):
+                    if (isRegged(username, irc)):
+                        ircSay(msgto, "Shutting Down....", irc)
+                        time.sleep(4)
+                        irc.close()
+                        exit()
+            elif command == "urban":
                 try:
                     if message[1]:
                         url = 'http://api.urbandictionary.com/v0/define?term='+message[1]
@@ -124,6 +125,10 @@ def main():
                 except Exception:
                     #need error handling
                     print "Shit just got real"
+        elif re.match(":r2d2.evilzone.org 001 "+conf['nick']+" :Welcome", line):
+            splitchannels = conf['channels'].split(" ")
+            for chan in splitchannels:
+                irc.send("JOIN %s\n" % (chan))
 
 def CreateSocket():
     conf = getConfig()
@@ -165,6 +170,20 @@ def ircPart(channel, irc):
 def ircNick(newnick, irc):
 #newnick=New nickname for the bot, irc=socket
     irc.send("NICK %s\n" % (newnick))
+
+
+def isRegged(nick, irc):
+    #true if Nickserv says he's registered
+    ircSay("NickServ","STATUS %s " % (nick),irc)
+    line = ""
+    while line is "":
+        line = irc.recv(2048)
+        print "REG TEST" + line
+        if line.find("STATUS %s 3" % (nick)) != -1:
+            return True
+        else:
+            return False
+
 
 if __name__ == "__main__":
     main()
