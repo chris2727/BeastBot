@@ -17,22 +17,17 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import os
 import re
-import sys
-import socket
-import os.path
-import logging
-import argparse
 import ConfigParser
 import re
-import urllib
-import json
 import time
+import os
 
 def main():
-    irc = CreateSocket()
-    conf = getConfig()
+    irc = mainFunc.CreateSocket()
+    conf = mainFunc.getConfig()
+    functions = mainFunc.getFunctions()
+    serverfunctions = mainFunc.getServerFunctions()
     while True:
         try:
             line = irc.recv(2048)
@@ -45,145 +40,104 @@ def main():
         splitline = line.split(" :")
         try:
             message = splitline[1]
+            origmessage = message
             messagechars = message
             message = message.split(" ")
             username = line.split("!")[0].replace(':', '')
             msgto = line.split(" ")[2]
+            if msgto == conf['nick']: msgto = username
             command = message[0]
-        except IndexError:
-            command = ""
-            #error handling goes here
-            pass
-        except Exception:
-            #error handling goes here
-            print "Shit just got real"
-            pass
-        if splitline[0] == "PING":
-            pong = "PONG %s" % splitline[1]
-            irc.send(pong)
-        elif messagechars[0] == conf['cominit']:
+            chan = msgto
+        except IndexError, e:
+            errorhandling.errorlog('information', e, line)
+        except Exception, e:
+            errorhandling.errorlog('critical', e)
+        try:
+            if re.match("http", message[0]): 
+                message[0] = conf['cominit']+"http"
+                command = conf['cominit']+"http"
+                messagechars = message[0]
+        except IndexError, e:
+            print "index error in var change"
+            errorhandling.errorlog('information', e)
+
+        if messagechars[0] == conf['cominit']:
             command = command[1:]
             command = command.strip()
-            if command == "about":
-                ircSay(username, conf['aboutmessage'], irc)
-            elif command == "help":
-                ircSay(username, "Still in construction", irc)
-            elif command == "nick":
+            if command == "reload":
                 if username in conf['admins'].split(" "):
-                    if (isRegged(username, irc)):
-                        ircNick(message[1], irc)
-            elif command == "join":
-                if username in conf['admins'].split(" "):
-                    if (isRegged(username, irc)):
-                        ircJoin(message[1], irc)
-            elif command == "part":
-                if username in conf['admins'].split(" "):
-                    if (isRegged(username, irc)):
-                        ircPart(message[1], irc)
-            elif command == "joinmain":
-                if username in conf['admins'].split(" "):
-                    if (isRegged(username, irc)):
-                        splitchannels = conf['channels'].split(" ")
-                        for chan in splitchannels:
-                            ircJoin(chan, irc)
-            elif command == "reload":
-                if username in conf['admins'].split(" "):
-                    if (isRegged(username, irc)):
-                        conf = getConfig()
-                        ircSay(msgto, "Configuration Reloaded...", irc)
+                    if (ircFunc.isRegged(username, irc)):
+                        mainFunc.reloadImports()
+                        conf = mainFunc.getConfig()
+                        functions = mainFunc.getFunctions()
+                        modules = mainFunc.getModules()
+                        ircFunc.ircSay(msgto, "Configuration Reloaded....", irc)
             elif command == "quit":
                 if username in conf['admins'].split(" "):
-                    if (isRegged(username, irc)):
-                        ircSay(msgto, "Shutting Down....", irc)
-                        time.sleep(4)
+                    if (ircFunc.isRegged(username, irc)):
+                        ircFunc.ircSay(msgto, "Shutting Down....", irc)
+                        mainFunc.cleanConfig()
                         irc.close()
+                        time.sleep(1)
                         exit()
-            elif command == "urban":
+            else:
                 try:
-                    if message[1]:
-                        url = 'http://api.urbandictionary.com/v0/define?term='+message[1]
-                        info = urllib.urlopen(url)
-                        data = json.loads(info.read())
-                        try:
-                            definition = data['list'][0]['definition']
-                            thumbsup = data['list'][0]['thumbs_up']
-                            thumbsdown = data['list'][0]['thumbs_down']
-                            thumbsdown = str(thumbsdown)
-                            thumbsup = str(thumbsup)
-                            msg = message[1].strip()
-                            output = msg+": "+definition+" Up:"+thumbsup+" Down: "+thumbsdown
-                            ircSay(msgto, output, irc)
-                        except IndexError:
-                            #need error handling
-                            ircSay(msgto, "No definition for: "+message[1], irc)
-                        except Exception:
-                            #need error handling
-                            print "Shit just got real"
-                except IndexError:
-                    #need error handling
-                    ircSay(msgto, username+" is a dumbass and didn't enter a term to search for....", irc)
-                except Exception:
-                    #need error handling
-                    print "Shit just got real"
-        elif re.match(":r2d2.evilzone.org 001 "+conf['nick']+" :Welcome", line):
+                    if functions[command]:
+                        function = functions[command]
+                        eval(function)(line, irc)
+                except KeyError:
+                    #Command does not exist
+                    pass
+                except Exception, e:
+                    errorhandling.errorlog('critical', e)
+        else:
+            try:
+                init = splitline[0]
+                init = init.lower()
+                if serverfunctions[init]:
+                    function = serverfunctions[init]
+                    eval(function)(line, irc)
+            except KeyError:
+                #command does not exist
+                pass
+            except Exception, e:
+                errorhandling.errorlog('critical', e)
+        if re.match(":r2d2.evilzone.org 001 "+conf['nick']+" :Welcome", line):
             splitchannels = conf['channels'].split(" ")
             for chan in splitchannels:
                 irc.send("JOIN %s\n" % (chan))
-
-def CreateSocket():
-    conf = getConfig()
-    irc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    irc.connect((conf['server'], int(conf['port'])))
-    irc.send('NICK '+conf['nick']+'\r\n')
-    irc.send('USER test test test :test\r\n')
-    return irc
+        elif re.search(":This nickname is registered and protected.", line):
+            ircFunc.ircSay("NICKSERV", "identify "+conf['password'], irc)
 
 
-def getConfig():
+def cleanConfig():
     config = ConfigParser.RawConfigParser()
     config.read('conf/beastbot.conf')
-    conf = dict(config.items('Main'))
-    return conf
+    config.remove_section('Functions')
+    config.remove_section('Modules')
+    config.remove_section('ServerFunctions')
+    config.add_section('ServerFunctions')
+    config.add_section('Modules')
+    config.add_section('Functions')
+    with open('conf/beastbot.conf', 'wb') as configfile:
+        config.write(configfile)
 
-###############
-#IRC Functions#
-###############
-
-def ircMode(chan, args, irc):
-    irc.send("MODE args, irc")
-
-def ircSay(to, msg, irc):
-#to=message to, msg=message to send, irc=socket
-    irc.send("PRIVMSG %s :%s\n" % (to, msg))
-
-
-def ircJoin(channel, irc):
-#channel=channel to join, irc=socket
-    irc.send("JOIN %s\n" % (channel))
-
-
-def ircPart(channel, irc):
-#channel=channel to part, irc=socket
-    irc.send("PART %s\n" % (channel))
-
-
-def ircNick(newnick, irc):
-#newnick=New nickname for the bot, irc=socket
-    irc.send("NICK %s\n" % (newnick))
-
-
-def isRegged(nick, irc):
-    #true if Nickserv says he's registered
-    ircSay("NickServ","STATUS %s " % (nick),irc)
-    line = ""
-    while line is "":
-        line = irc.recv(2048)
-        print "REG TEST" + line
-        if line.find("STATUS %s 3" % (nick)) != -1:
-            return True
-        else:
-            return False
-
+def loadImports(path):
+    files = os.listdir(path)
+    imps = []
+    for i in range(len(files)):
+        name = files[i].split('.')
+        if len(name) > 1:
+            if name[1] == 'py' and name[0] != '__init__':
+                name = name[0]
+                imps.append(name)
+    file = open(path+'__init__.py','w')
+    toWrite = '__all__ ='+str(imps)
+    file.write(toWrite)
+    file.close()
+cleanConfig()
+loadImports('modules/')
+from modules import *
 
 if __name__ == "__main__":
     main()
