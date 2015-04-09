@@ -17,7 +17,6 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import re
 import ConfigParser
 import re
 import time
@@ -44,7 +43,7 @@ def main():
             messagechars = message
             message = message.split(" ")
             username = line.split("!")[0].replace(':', '')
-            msgto = line.split(" ")[2]
+            msgto = line.split(" ")[2] #Gives an error into the log
             if msgto == conf['nick']: msgto = username
             command = message[0]
             chan = msgto
@@ -102,7 +101,7 @@ def main():
                 pass
             except Exception, e:
                 errorhandling.errorlog('critical', e)
-        if re.match(":r2d2.evilzone.org 001 "+conf['nick']+" :Welcome", line):
+        if re.match("^:[a-zA-Z0-9\-\.]+\.[a-zA-Z0-9\-\.]+\.(com|org|net|mil|edu|COM|ORG|NET|MIL|EDU) 001 "+conf['nick']+" :Welcome", line):
             splitchannels = conf['channels'].split(" ")
             for chan in splitchannels:
                 irc.send("JOIN %s\n" % (chan))
