@@ -2,7 +2,7 @@ import os
 import time
 
 
-time.sleep(2)
+time.sleep(1)
 print "Updating..."
 os.system('git pull')
 time.sleep(2)
