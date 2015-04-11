@@ -9,7 +9,7 @@ def init():
     config.set('Functions', 'join', 'botadministration.join')
     config.set('Functions', 'part', 'botadministration.part')
     config.set('Functions', 'nick', 'botadministration.changenick')
-    config.set('Functions', 'testing', 'botadministration.testing')
+    config.set('Functions', 'testing2', 'botadministration.testing')
     with open('conf/beastbot.conf', 'wb') as configfile:
         config.write(configfile)
 
