@@ -9,7 +9,7 @@ def init():
     config.set('Functions', 'join', 'botadministration.join')
     config.set('Functions', 'part', 'botadministration.part')
     config.set('Functions', 'nick', 'botadministration.changenick')
-
+    config.set('Functions', 'testing', 'botadministration.testing')
     with open('conf/beastbot.conf', 'wb') as configfile:
         config.write(configfile)
 
@@ -23,7 +23,7 @@ def getConfig():
 
 def testing(line, irc):
     ircFunc.ircSay("#lobby", "It Worked!", irc)
-    
+
 def changenick(line, irc):
     splitline = line.split(" :")
     try:
