@@ -9,7 +9,6 @@ def init():
     config.set('Functions', 'join', 'botadministration.join')
     config.set('Functions', 'part', 'botadministration.part')
     config.set('Functions', 'nick', 'botadministration.changenick')
-    config.set('Functions', 'testing2', 'botadministration.testing')
     with open('conf/beastbot.conf', 'wb') as configfile:
         config.write(configfile)
 
@@ -20,9 +19,6 @@ def getConfig():
     config.read('conf/beastbot.conf')
     conf = dict(config.items('Main'))
     return conf
-
-def testing(line, irc):
-    ircFunc.ircSay("#lobby", "It Worked!", irc)
 
 def changenick(line, irc):
     splitline = line.split(" :")
