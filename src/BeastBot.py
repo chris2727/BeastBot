@@ -88,7 +88,12 @@ def main():
                         msg = "Shutting down for updates..."
                         ircFunc.ircSay(msgto, msg, irc)
                         mainFunc.cleanConfig()
-                        irc.close()
+                        try:
+                            irc.close()
+                        except Exception, e:
+                            ircSay(username, 'Forcing Shutdown...', irc)
+                            errorhandling.errorlog('critical', e, 'forcing shutdown')
+                            exit()
                         time.sleep(3)
                         os.system("python pullupdates.py")
                         # Bot should not go past this line
