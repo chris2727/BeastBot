@@ -41,8 +41,16 @@ def getConfig():
 def ruby(line, irc):
     splitline = line.split(" :")
     #define the file to run based on given command
-    script_to_execute = splitline[1].rstrip() + ".rb"
+    given_input = splitline[1].split(" ")  
+    script_to_execute = given_input[0].rstrip() + ".rb"
     
+    #Check for parameters for the ruby script
+    parameters = ""
+    for i in range(1, len(given_input)):
+        parameters = parameters + given_input[i] + ":"
+    
+    parameters = parameters.rstrip(":").rstrip()
+
     conf = getConfig()
     
     # Open the script associated with the command
@@ -50,23 +58,31 @@ def ruby(line, irc):
         ruby_script = Popen(['ruby', 'ruby_modules/' + script_to_execute[1:]], stdin=PIPE, stdout=PIPE, stderr=STDOUT)
     except Exception, e:
         errorhandling.errorlog('critical', 'Ruby script could not be executed', line)
+        ruby_script.stdout.close()
         
     result = []
     
+    #write parameters
+    if parameters != "":
+        ruby_script.stdin.write(parameters + "\n")
+        
     #Some magic that stores the piped data in an array "result"
     try:
         while True:
+            ruby_line = ruby_script.stdout.readline().rstrip()
+            
             if ruby_script.poll() is not None:
                 break
             
-            ruby_line = ruby_script.stdout.readline().rstrip()
             result.append(ruby_line)
-            
+                
             if line == '[end]':
                 break
+            
     except Exception, e:
         errorhandling.errorlog('critical', e, line)
         
+    print result
     #output is made ready for sending    
     try:
         for i in range(len(result)):
@@ -84,5 +100,6 @@ def ruby(line, irc):
 
     except Exception, e:
         errorhandling.errorlog('critical', e, line)
+        ruby_script.stdout.close()
         
-
+    ruby_script.stdout.close()
