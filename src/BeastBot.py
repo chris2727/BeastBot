@@ -58,6 +58,7 @@ def main():
                                 ircFunc.ircSay(ircFunc.getMsgto(line), 'Done pulling from github...', irc)
                 else:
                     try:
+                        command = command.strip()
                         function = functions[command]
                         functionProc = Process(target=eval(function), args=(line, irc,))
                         functionProc.daemon = True
