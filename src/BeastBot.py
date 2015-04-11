@@ -55,7 +55,10 @@ def main():
                 else:
                     try:
                         function = functions[command]
-                        functionProc = Process(target=eval(function), args=(line, irc,)).start()
+                        functionProc = Process(target=eval(function), args=(line, irc,))
+			functionProc.daemon = True
+			functionProc.start()
+			functionProc.join()
                     except KeyError:
                         #Command does not exist
                         pass
