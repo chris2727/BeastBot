@@ -1,3 +1,4 @@
+
 def ircMode(chan, args, irc):
 	irc.send("MODE %s %s\n" % (chan, args))
 
@@ -19,12 +20,18 @@ def ircNick(newnick, irc):
 
 def isRegged(nick, irc):
     #true if Nickserv says he's registered
-    ircSay("NickServ","STATUS %s " % (nick),irc)
+    print "in regged"
+    ircSay("NickServ","STATUS %s " % (nick) ,irc)
+    print "sent"
     line = ""
     while line is "":
+        ircSay("NickServ","STATUS %s " % (nick) ,irc)
+        print "in while"
         line = irc.recv(2048)
         print "REG TEST" + line
         if line.find("STATUS %s 3" % (nick)) != -1:
             return True
+            print "regged"
         else:
             return False
+            print "not regged"

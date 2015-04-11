@@ -46,8 +46,9 @@ def main():
             messagechars = message
             message = message.split(" ")
             username = line.split("!")[0].replace(':', '')
-            msgto = line.split(" ")[2] #Gives an error into the log
-            if msgto == conf['nick']: msgto = username
+            msgto = line.split(" ")[2]  # Gives an error into the log
+            if msgto == conf['nick']:
+                msgto = username
             command = message[0]
             chan = msgto
         except IndexError, e:
@@ -55,7 +56,7 @@ def main():
         except Exception, e:
             errorhandling.errorlog('critical', e)
         try:
-            if re.match("http", message[0]): 
+            if re.match("http", message[0]):
                 message[0] = conf['cominit']+"http"
                 command = conf['cominit']+"http"
                 messagechars = message[0]
@@ -72,7 +73,7 @@ def main():
                         conf = mainFunc.getConfig()
                         functions = mainFunc.getFunctions()
                         modules = mainFunc.getModules()
-                        ircFunc.ircSay(msgto, "Configuration Reloaded....", irc)
+                        ircFunc.ircSay(msgto, "Configuration Reloaded...", irc)
             elif command == "quit":
                 if username in conf['admins'].split(" "):
                     if (ircFunc.isRegged(username, irc)):
@@ -84,12 +85,15 @@ def main():
             elif command == "update":
                 if username in conf['admins'].split(" "):
                     if (ircFunc.isRegged(username, irc)):
-                        ircFunc.ircSay(msgto, "Shutting down for updates...", irc)
+                        msg = "Shutting down for updates..."
+                        ircFunc.ircSay(msgto, msg, irc)
                         mainFunc.cleanConfig()
                         irc.close()
                         time.sleep(3)
                         os.system("python pullupdates.py")
-                        errorhandling.errorlog('critical', 'pulling updates goofed and moved to this line.. Exiting bot...')#Bot should not hit this line
+                        # Bot should not go past this line
+                        msg = "Error pulling updates..."
+                        errorhandling.errorlog('critical', msg)
                         exit()
             else:
                 try:
@@ -135,6 +139,7 @@ def cleanConfig():
     with open('conf/beastbot.conf', 'wb') as configfile:
         config.write(configfile)
 
+
 def loadImports(path):
     files = os.listdir(path)
     imps = []
@@ -144,7 +149,7 @@ def loadImports(path):
             if name[1] == 'py' and name[0] != '__init__':
                 name = name[0]
                 imps.append(name)
-    file = open(path+'__init__.py','w')
+    file = open(path+'__init__.py', 'w')
     toWrite = '__all__ ='+str(imps)
     file.write(toWrite)
     file.close()
