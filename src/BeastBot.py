@@ -21,6 +21,9 @@ import ConfigParser
 import re
 import time
 import os
+from threading import Thread
+import thread
+
 
 def main():
     irc = mainFunc.CreateSocket()
@@ -57,7 +60,6 @@ def main():
                 command = conf['cominit']+"http"
                 messagechars = message[0]
         except IndexError, e:
-            print "index error in var change"
             errorhandling.errorlog('information', e)
 
         if messagechars[0] == conf['cominit']:
@@ -79,11 +81,23 @@ def main():
                         irc.close()
                         time.sleep(1)
                         exit()
+            elif command == "update":
+                if username in conf['admins'].split(" "):
+                    if (ircFunc.isRegged(username, irc)):
+                        ircFunc.ircSay(msgto, "Shutting down for updates...", irc)
+                        mainFunc.cleanConfig()
+                        irc.close()
+                        time.sleep(3)
+                        os.system("python pullupdates.py")
+                        errorhandling.errorlog('critical', 'pulling updates goofed and moved to this line.. Exiting bot...')#Bot should not hit this line
+                        exit()
             else:
                 try:
                     if functions[command]:
                         function = functions[command]
-                        eval(function)(line, irc)
+                        functionThread = Thread(target=eval(function), args=(line, irc,))
+                        functionThread.daemon = True
+                        functionThread.start()
                 except KeyError:
                     #Command does not exist
                     pass
