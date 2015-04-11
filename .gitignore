@@ -6,7 +6,7 @@ __pycache__/
 *.so
 
 # BeastBot Configuration File
-beastbot.conf
+*beastbot.conf*
 
 # Distribution / packaging
 .Python
