@@ -21,6 +21,9 @@ def getConfig():
     conf = dict(config.items('Main'))
     return conf
 
+def testing(line, irc):
+    ircFunc.ircSay("#lobby", "It Worked!", irc)
+    
 def changenick(line, irc):
     splitline = line.split(" :")
     try:
