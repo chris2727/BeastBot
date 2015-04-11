@@ -52,13 +52,17 @@ def main():
                                 irc.close()
                                 time.sleep(1)
                                 exit()
+                            elif command == "pull":
+                                ircFunc.ircSay(ircFunc.getMsgto(line), 'Pulling from github...', irc)
+                                os.system('git pull')
+                                ircFunc.ircSay(ircFunc.getMsgto(line), 'Done pulling from github...', irc)
                 else:
                     try:
                         function = functions[command]
                         functionProc = Process(target=eval(function), args=(line, irc,))
-			functionProc.daemon = True
-			functionProc.start()
-			functionProc.join()
+                        functionProc.daemon = True
+                        functionProc.start()
+                        functionProc.join()
                     except KeyError:
                         #Command does not exist
                         pass
