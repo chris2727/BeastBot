@@ -1,6 +1,6 @@
 
 def ircMode(chan, args, irc):
-	irc.send("MODE %s %s\n" % (chan, args))
+    irc.send("MODE %s %s\n" % (chan, args))
 
 def ircSay(to, msg, irc):
 #to=message to, msg=message to send, irc=socket
@@ -24,9 +24,15 @@ def isRegged(nick, irc):
     line = ""
     while line is "":
         ircSay("NickServ","STATUS %s " % (nick) ,irc)
-        line = irc.recv(2048)
+        line = irc.recv(512)
         print "REG TEST" + line
         if line.find("STATUS %s 3" % (nick)) != -1:
             return True
         else:
             return False
+
+def getMsgto(line):
+    return line.split(" ")[2]
+
+def getUsername(line):
+    return line.split("!")[0][1:]

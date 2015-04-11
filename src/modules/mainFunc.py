@@ -16,8 +16,6 @@ def cleanConfig():
     config.read('conf/beastbot.conf')
     config.remove_section('Functions')
     config.remove_section('Modules')
-    config.remove_section('ServerFunctions')
-    config.add_section('ServerFunctions')
     config.add_section('Modules')
     config.add_section('Functions')
     with open('conf/beastbot.conf', 'wb') as configfile:
@@ -52,9 +50,3 @@ def getFunctions():
     config.read('conf/beastbot.conf')
     functions = dict(config.items('Functions'))
     return functions
-
-def getServerFunctions():
-    config = ConfigParser.RawConfigParser()
-    config.read('conf/beastbot.conf')
-    serverfunctions = dict(config.items('ServerFunctions'))
-    return serverfunctions

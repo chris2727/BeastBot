@@ -1,6 +1,7 @@
 import ConfigParser
 import ircFunc
 import urllib
+import urllib2
 import errorhandling
 import string
 import re
@@ -35,7 +36,7 @@ def urlparse(line, irc):
     except Exception, e:
         errorhandling.errorlog('critical', e, line)
     try:
-        sock = urllib.urlopen(message[0])
+        sock = urllib2.urlopen(message[0], timeout=4)
         html = sock.read()
         sock.close()
         start = html.find('<title>') + 7
