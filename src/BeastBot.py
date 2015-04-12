@@ -8,7 +8,6 @@ def main():
     irc = mainFunc.CreateSocket()
     conf = mainFunc.getConfig()
     functions = mainFunc.getFunctions()
-
     while True:
         try:
             line = irc.recv(512)
@@ -81,6 +80,11 @@ def main():
                     irc.send("JOIN %s\n" % (chan))
             elif re.search(":This nickname is registered and protected.", line):
                 ircFunc.ircSay("NICKSERV", "identify "+conf['password'], irc)
+            elif line[0:20] == "ERROR :Closing Link:":
+                errorhandling.loginfo("Bot disconnected due to ping timeout...")
+                errorhandling.loginfo('Reconnecting in 30 seconds...')
+                time.sleep(30)
+                irc = mainFunc.CreateSocket()
         except IndexError:
             # Invalid command or Server sent message
             pass

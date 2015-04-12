@@ -51,3 +51,11 @@ def errorlog(option, message, additional = None):
     option = option.upper()
     log(option, message, info, additional)
     
+def loginfo(info):
+    info = str(info)
+    date = time.strftime("%d-%m-%Y")
+    time = time.strftime("%H:%M:%S")
+    file = open("log/%s.log" %(date), 'a')
+    output = time+" - "+info
+    file.write(output+"\n")
+    file.close()

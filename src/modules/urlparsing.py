@@ -6,7 +6,6 @@ import errorhandling
 import string
 import re
 
-'somestring. with funny characters'
 def init():
     config = ConfigParser.ConfigParser()
     config.read('conf/beastbot.conf')
