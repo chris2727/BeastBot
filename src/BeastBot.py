@@ -84,6 +84,7 @@ def main():
                 errorhandling.loginfo("Bot disconnected due to ping timeout...")
                 errorhandling.loginfo('Reconnecting in 30 seconds...')
                 time.sleep(30)
+                errorhandling.loginfo("Reconnecting now....")
                 irc = mainFunc.CreateSocket()
         except IndexError:
             # Invalid command or Server sent message
