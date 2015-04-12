@@ -8,7 +8,7 @@ def CreateSocket():
     irc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     irc.connect((conf['server'], int(conf['port'])))
     irc.send('NICK '+conf['nick']+'\r\n')
-    irc.send('USER test test test :test\r\n')
+    irc.send('USER BeastBot BeastBot BeastBot :BeastBot\r\n')
     return irc
 
 def cleanConfig():
