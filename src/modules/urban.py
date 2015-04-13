@@ -1,7 +1,7 @@
 import ConfigParser
 import urllib
 import json
-import ircFunc
+import ircFunc, mainFunc
 import errorhandling
 
 def init():
@@ -16,25 +16,11 @@ def init():
         config.write(configfile)
 
 init()
-def getConfig():
-    config = ConfigParser.RawConfigParser()
-    config.read('conf/beastbot.conf')
-    conf = dict(config.items('Main'))
-    return conf
 
 def urban(line, irc):
-    conf = getConfig()
+    conf = mainFunc.getConfig()
     splitline = line.split(" :")
-    try:
-        username = line.split("!")[0].replace(':', '')
-        message = splitline[1]
-        msgto = line.split(" ")[2]
-        whole = message.split(" ", 1)[1]
-        message = message.split(" ")
-    except IndexError, e:
-        errorhandling.errorlog('information', e, line)
-    except Exception, e:
-        errorhandling.errorlog('Critical', e, line)
+    message, whole, username, msgto = ircMessage(line, whl=True)
     try:
         if message[1]:
             if msgto == conf['nick']:

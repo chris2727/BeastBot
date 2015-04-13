@@ -1,3 +1,4 @@
+import errorhandling, mainFunc
 
 def ircMode(chan, args, irc):
     irc.send("MODE %s %s\n" % (chan, args))
@@ -19,8 +20,9 @@ def ircNick(newnick, irc):
     irc.send("NICK %s\n" % (newnick))
 
 def isRegged(nick, irc):
-    #true if Nickserv says he's registered
-    ircSay("NickServ","STATUS %s " % (nick) ,irc)
+    """Function to check is user is identified with nickserv.
+        true if Nickserv says he's registered."""
+    ircSay("NickServ","STATUS %s " % (nick,irc))
     line = ""
     while line is "":
         ircSay("NickServ","STATUS %s " % (nick) ,irc)
@@ -36,3 +38,26 @@ def getMsgto(line):
 
 def getUsername(line):
     return line.split("!")[0][1:]
+
+
+def ircMessage(line, whl=False):
+    """Func to process message received from server."""
+    conf = mainFunc.getConfig()
+    splitline = line.split(" :")
+    try:
+        message = splitline[1]
+        message = message.split(" ")
+        username = getUsername(line)
+        if getMsgto(line) == conf['nick']: #privmsg
+            msgto = username
+        else:
+            msgto = getMsgto(line)
+        if whl:
+            whole = message.split(" ", 1)[1]
+            return message, whole, username, msgto
+        return message, username, msgto
+    except IndexError as e:
+        errorhandling.errorlog('information', e, line)
+    except Exception as e:
+        errorhandling.errorlog('critical', e, line)
+

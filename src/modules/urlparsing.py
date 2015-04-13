@@ -1,5 +1,5 @@
 import ConfigParser
-import ircFunc
+import ircFunc, mainFunc
 import urllib
 import urllib2
 import errorhandling
@@ -17,23 +17,8 @@ def init():
 
 init()
 
-def getConfig():
-    config = ConfigParser.RawConfigParser()
-    config.read('conf/beastbot.conf')
-    conf = dict(config.items('Main'))
-    return conf
-
-
 def urlparse(line, irc):
-    splitline = line.split(" :")
-    try:
-        message = splitline[1]
-        message = message.split(" ")
-        msgto = line.split(" ")[2]
-    except IndexError, e:
-        errorhandling.errorlog('information', e, line)
-    except Exception, e:
-        errorhandling.errorlog('critical', e, line)
+    message, username, msgto = ircFunc.ircMessage(line)
     try:
         sock = urllib2.urlopen(message[0], timeout=4)
         html = sock.read()
@@ -52,8 +37,7 @@ def urlparse(line, irc):
             title = title[0:100]
             output = "Title: ["+title+"]"
             ircFunc.ircSay(msgto, output, irc)
-    except IndexError, e:
+    except IndexError as e:
         errorhandling.errorlog('information', e, line)
-    except Exception, e:
+    except Exception as e:
         errorhandling.errorlog('critical', e, line)
-          

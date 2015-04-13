@@ -16,6 +16,8 @@ def cleanConfig():
     config.read('conf/beastbot.conf')
     config.remove_section('Functions')
     config.remove_section('Modules')
+    config.remove_section('ServerFunctions')
+    config.add_section('ServerFunctions')
     config.add_section('Modules')
     config.add_section('Functions')
     with open('conf/beastbot.conf', 'wb') as configfile:
@@ -33,20 +35,18 @@ def reloadImports():
         except Exception, e:
             errorhandling.errorlog('critical', e, "Trying to load module: "+i)
 
-def getModules():
+
+def confLoad(item):
     config = ConfigParser.RawConfigParser()
     config.read('conf/beastbot.conf')
-    modules = dict(config.items('Modules'))
-    return modules
+    items = dict(config.items(item))
+    return items
+
+def getModules():
+    return confLoad('Modules')
 
 def getConfig():
-    config = ConfigParser.RawConfigParser()
-    config.read('conf/beastbot.conf')
-    conf = dict(config.items('Main'))
-    return conf
+    return confLoad('Main')
 
 def getFunctions():
-    config = ConfigParser.RawConfigParser()
-    config.read('conf/beastbot.conf')
-    functions = dict(config.items('Functions'))
-    return functions
+    return confLoad('Functions')

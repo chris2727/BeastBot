@@ -1,5 +1,5 @@
 import ConfigParser
-import ircFunc
+import ircFunc, mainFunc
 import errorhandling
 
 def init():
@@ -15,76 +15,32 @@ def init():
 
 init()
 
-def getConfig():
-    config = ConfigParser.RawConfigParser()
-    config.read('conf/beastbot.conf')
-    conf = dict(config.items('Main'))
-    return conf
-
 def commands(line, irc):
-    splitline = line.split(" :")
+    message, username, msgto = ircFunc.ircMessage(line)
     try:
-        message = splitline[1]
-        message = message.split(" ")
-        username = line.split("!")[0].replace(':', '')
-        msgto = line.split(" ")[2]
-    except IndexError, e:
-        errorhandling.errorlog('information', e, line)
-    except Exception, e:
-        errorhandling.errorlog('critical', e, line)
-    try:
-        conf = getConfig()
         ircFunc.ircSay(username, "Still under construction", irc)
-    except Exception, e:
+    except Exception as e:
         errorhandling.errorlog('critical', e, line)
 
 def help(line, irc):
-    splitline = line.split(" :")
+    message, username, msgto = ircFunc.ircMessage(line)
     try:
-        message = splitline[1]
-        message = message.split(" ")
-        username = line.split("!")[0].replace(':', '')
-        msgto = line.split(" ")[2]
-    except IndexError, e:
-        errorhandling.errorlog('information', e, line)
-    except Exception, e:
-        errorhandling.errorlog('critical', e, line)
-    try:
-        conf = getConfig()
         ircFunc.ircSay(username, "Still under construction", irc)
-    except Exception, e:
+    except Exception as e:
         errorhandling.errorlog('critical', e, line)
 
 
 def about(line, irc):
-    splitline = line.split(" :")
+    message, username, msgto = ircFunc.ircMessage(line)
     try:
-        message = splitline[1]
-        message = message.split(" ")
-        username = line.split("!")[0].replace(':', '')
-        msgto = line.split(" ")[2]
-    except IndexError, e:
-        errorhandling.errorlog('information', e, line)
-    except Exception, e:
-        errorhandling.errorlog('critical', e, line)
-    try:
-        conf = getConfig()
+        conf = mainFunc.getConfig()
         ircFunc.ircSay(username, conf['aboutmessage'], irc)
     except Exception, e:
         errorhandling.errorlog('critical', e, line)
 
 def showip(line, irc):
-    splitline = line.split(" :")
+    message, username, msgto = ircFunc.ircMessage(line)
     try:
-        message = splitline[1]
-        message = message.split(" ")
-        username = line.split("!")[0].replace(':', '')
-        msgto = line.split(" ")[2]
-    except IndexError, e:
-        errorhandling.errorlog('information', e, line)
-    except Exception, e:
-        errorhandling.errorlog('critical', e, line)
-    try:
-        ircFunc.ircSay(msgto, username+", my ip address apears to be 127.0.0.1", irc)
+        ircFunc.ircSay(msgto, username+", my ip address appears to be 127.0.0.1", irc)
     except Exception, e:
         errorhandling.errorlog('critical', e, line)
