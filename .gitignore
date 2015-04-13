@@ -1,12 +1,16 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
+*~
+
 
 # C extensions
 *.so
 
 # BeastBot Configuration File
+conf/
 *beastbot.conf*
+__init.py__
 
 # Distribution / packaging
 .Python
