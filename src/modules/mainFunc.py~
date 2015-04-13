@@ -8,7 +8,7 @@ def CreateSocket():
     irc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     irc.connect((conf['server'], int(conf['port'])))
     irc.send('NICK '+conf['nick']+'\r\n')
-    irc.send('USER '+conf['user']+' '+conf['nick']+' '+conf['nick']+' :'+conf['name']+'\r\n')
+    irc.send('USER '+conf['user']+' '+conf['nick']+' '+conf['nick']+' :'+conf['name']'\r\n')
     return irc
 
 def cleanConfig():
