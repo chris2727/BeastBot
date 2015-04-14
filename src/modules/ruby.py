@@ -10,7 +10,7 @@
 
 import ConfigParser
 import json
-import ircFunc
+import ircFunc, Mainfunc
 import errorhandling
 import os
 from subprocess import Popen, PIPE, STDOUT
@@ -20,8 +20,12 @@ def init():
     config = ConfigParser.ConfigParser()
     config.read('conf/beastbot.conf')
     config.set('Modules', 'ruby', 'loaded')
-    
-    files = os.listdir('ruby_modules/')
+
+    #See if the path exists else create it
+    if os.path.exists('ruby_modules'):
+        files = os.listdir('ruby_modules/')
+    else:
+        os.mkdir('ruby_modules/')
     
     #Add all files in ruby_modules as commands
     for i in range(len(files)):
@@ -40,12 +44,10 @@ def ruby(line, irc):
     script_to_execute = given_input[0].rstrip() + ".rb"
     
     #Check for parameters for the ruby script
-    parameters = ""
     for i in range(1, len(given_input)):
         parameters = parameters + given_input[i] + ":"
     
     parameters = parameters.rstrip(":").rstrip()
-
     
     # Open the script associated with the command
     try:
@@ -76,7 +78,6 @@ def ruby(line, irc):
     except Exception, e:
         errorhandling.errorlog('critical', e, line)
         
-    print result
     #output is made ready for sending    
     try:
         for i in range(len(result)):
@@ -97,4 +98,3 @@ def ruby(line, irc):
         ruby_script.stdout.close()
         
     ruby_script.stdout.close()
-
