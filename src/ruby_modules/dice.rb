@@ -4,6 +4,7 @@
 #
 # Author: Lenoch
 
+
 require 'beastbot'
 
 def throw(sides)
@@ -12,5 +13,12 @@ def throw(sides)
 end
 
 sides = Beastbot::Interpret::get_arguments
-val = throw(sides.to_i)
-Beastbot::Talk::send_to_channel("Throws " + val)
+
+if sides.nil?
+  val = throw(sides.to_i)
+  Beastbot::Talk::send_to_channel("Throws " + val)
+  Beastbot::Talk::send_to_user("Throws " + val)
+else 
+  Beastbot::Talk::send_to_channel("Give a number of sides or a number of sides greater then 0")
+end
+
