@@ -1,14 +1,14 @@
 import sys
 import socket
 import ConfigParser
-import errorhandling
+import errorhandling, mainFunc
 
 def CreateSocket():
-    conf = getConfig()
+    conf = mainFunc.getConfig()
     irc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     irc.connect((conf['server'], int(conf['port'])))
     irc.send('NICK '+conf['nick']+'\r\n')
-    irc.send('USER BeastBot BeastBot BeastBot :BeastBot\r\n')
+    irc.send('USER '+conf['user']+' '+conf['nick']+' '+conf['nick']+' :'+conf['name']+'\r\n')
     return irc
 
 def cleanConfig():
@@ -16,6 +16,8 @@ def cleanConfig():
     config.read('conf/beastbot.conf')
     config.remove_section('Functions')
     config.remove_section('Modules')
+    config.remove_section('ServerFunctions')
+    config.add_section('ServerFunctions')
     config.add_section('Modules')
     config.add_section('Functions')
     with open('conf/beastbot.conf', 'wb') as configfile:
@@ -33,20 +35,18 @@ def reloadImports():
         except Exception, e:
             errorhandling.errorlog('critical', e, "Trying to load module: "+i)
 
-def getModules():
+
+def confLoad(item):
     config = ConfigParser.RawConfigParser()
     config.read('conf/beastbot.conf')
-    modules = dict(config.items('Modules'))
-    return modules
+    items = dict(config.items(item))
+    return items
+
+def getModules():
+    return confLoad('Modules')
 
 def getConfig():
-    config = ConfigParser.RawConfigParser()
-    config.read('conf/beastbot.conf')
-    conf = dict(config.items('Main'))
-    return conf
+    return confLoad('Main')
 
 def getFunctions():
-    config = ConfigParser.RawConfigParser()
-    config.read('conf/beastbot.conf')
-    functions = dict(config.items('Functions'))
-    return functions
+    return confLoad('Functions')

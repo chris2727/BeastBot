@@ -13,12 +13,6 @@ def init():
 
 init()
 
-def getConfig():
-    config = ConfigParser.RawConfigParser()
-    config.read('conf/beastbot.conf')
-    conf = dict(config.items('Main'))
-    return conf
-
 
 def functionname(line, irc):
     splitline = line.split(" :")

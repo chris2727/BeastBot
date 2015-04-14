@@ -11,6 +11,7 @@
 import ConfigParser
 import json
 import ircFunc
+from mainFunc import getConfig
 import errorhandling
 import os
 from subprocess import Popen, PIPE, STDOUT
@@ -32,11 +33,6 @@ def init():
         config.write(configfile)
 
 init()
-def getConfig():
-    config = ConfigParser.RawConfigParser()
-    config.read('conf/beastbot.conf')
-    conf = dict(config.items('Main'))
-    return conf
  
 def ruby(line, irc):
     splitline = line.split(" :")
@@ -103,3 +99,4 @@ def ruby(line, irc):
         ruby_script.stdout.close()
         
     ruby_script.stdout.close()
+
