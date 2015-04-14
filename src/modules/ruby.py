@@ -9,7 +9,6 @@
 #
 
 import ConfigParser
-import json
 import ircFunc
 import errorhandling
 import os
@@ -20,8 +19,12 @@ def init():
     config = ConfigParser.ConfigParser()
     config.read('conf/beastbot.conf')
     config.set('Modules', 'ruby', 'loaded')
-    
-    files = os.listdir('ruby_modules/')
+
+    #See if the path exists else create it
+    if os.path.exists('ruby_modules/'):
+        files = os.listdir('ruby_modules/')
+    else:
+        os.mkdir('ruby_modules/')
     
     #Add all files in ruby_modules as commands
     for i in range(len(files)):
@@ -45,56 +48,56 @@ def ruby(line, irc):
         parameters = parameters + given_input[i] + ":"
     
     parameters = parameters.rstrip(":").rstrip()
-
     
     # Open the script associated with the command
     try:
         ruby_script = Popen(['ruby', 'ruby_modules/' + script_to_execute[1:]], stdin=PIPE, stdout=PIPE, stderr=STDOUT)
-    except Exception, e:
-        errorhandling.errorlog('critical', 'Ruby script could not be executed', line)
+    except Exception as e:
+        errorhandling.errorlog('critical', e, line)
         ruby_script.stdout.close()
-        
+
+
     result = []
     
     #write parameters
-    if parameters != "":
+    if parameters == "":
+        ruby_script.stdin.write("nil" + "\n")
+    else:
         ruby_script.stdin.write(parameters + "\n")
-        
+
     #Some magic that stores the piped data in an array "result"
     try:
         while True:
             ruby_line = ruby_script.stdout.readline().rstrip()
-            
+
             if ruby_script.poll() is not None:
                 break
-            
+
             result.append(ruby_line)
                 
-            if line == '[end]':
-                break
             
-    except Exception, e:
+    except Exception as e:
         errorhandling.errorlog('critical', e, line)
-        
-    print result
+        ruby_script.stdout.close()
+
+    
     #output is made ready for sending    
     try:
         for i in range(len(result)):
-            output = result[i]
-        
-        sendinfo = output.split(":")
-        msgto = ""
-        
-        username = line.split("!")[0].replace(':', '')
-        #Piped data contains reciptient:data structure so Beastbot knows how to send the command
-        if sendinfo[0] == "channel":
-            ircFunc.ircSay(line.split(" ")[2], username + ": " + sendinfo[1], irc)
-        else:
-            ircFunc.ircSay(username, sendinfo[1], irc)
+            sendinfo = result[i].split(":")
+            username = line.split("!")[0].replace(':', '')
 
+            #Piped data contains reciptient:data structure so Beastbot knows how to send the command
+            if sendinfo[0] == "channel":
+                ircFunc.ircSay(line.split(" ")[2], username + ": " + sendinfo[1], irc)
+            elif sendinfo[0] == "user":
+                ircFunc.ircSay(username, sendinfo[1], irc)
+            else:
+                ircFunc.ircSay(line.split(" ")[2], "An error occured in the script", irc)
+                break
+                
     except Exception, e:
         errorhandling.errorlog('critical', e, line)
         ruby_script.stdout.close()
         
     ruby_script.stdout.close()
-
