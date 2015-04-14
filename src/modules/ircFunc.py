@@ -22,7 +22,7 @@ def ircNick(newnick, irc):
 def isRegged(nick, irc):
     """Function to check is user is identified with nickserv.
         true if Nickserv says he's registered."""
-    ircSay("NickServ","STATUS %s " % (nick,irc))
+    ircSay("NickServ","STATUS %s " % (nick),irc)
     line = ""
     while line is "":
         ircSay("NickServ","STATUS %s " % (nick) ,irc)
