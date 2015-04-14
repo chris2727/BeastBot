@@ -18,7 +18,10 @@ init()
 def commands(line, irc):
     message, username, msgto = ircFunc.ircMessage(line)
     try:
-        ircFunc.ircSay(username, "Still under construction", irc)
+        conf = mainFunc.getConfig()
+        split = conf['commands'].split('\n')
+        for i in split:
+            ircFunc.ircSay(username, i, irc)
     except Exception as e:
         errorhandling.errorlog('critical', e, line)
 
@@ -34,7 +37,9 @@ def about(line, irc):
     message, username, msgto = ircFunc.ircMessage(line)
     try:
         conf = mainFunc.getConfig()
-        ircFunc.ircSay(username, conf['aboutmessage'], irc)
+        split = conf['aboutmessage'].split('\n')
+        for i in split:
+            ircFunc.ircSay(username, i, irc)
     except Exception, e:
         errorhandling.errorlog('critical', e, line)
 

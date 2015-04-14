@@ -20,7 +20,7 @@ init()
 def urban(line, irc):
     conf = mainFunc.getConfig()
     splitline = line.split(" :")
-    message, whole, username, msgto = ircMessage(line, whl=True)
+    message, whole, username, msgto = ircFunc.ircMessage(line, whl=True)
     try:
         if message[1]:
             if msgto == conf['nick']:

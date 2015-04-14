@@ -11,7 +11,6 @@
 import ConfigParser
 import json
 import ircFunc
-from mainFunc import getConfig
 import errorhandling
 import os
 from subprocess import Popen, PIPE, STDOUT
@@ -20,7 +19,7 @@ def init():
     modulename = "urban"
     config = ConfigParser.ConfigParser()
     config.read('conf/beastbot.conf')
-    config.set('Modules', 'ruby_modules', 'loaded')
+    config.set('Modules', 'ruby', 'loaded')
     
     files = os.listdir('ruby_modules/')
     
@@ -47,7 +46,6 @@ def ruby(line, irc):
     
     parameters = parameters.rstrip(":").rstrip()
 
-    conf = getConfig()
     
     # Open the script associated with the command
     try:

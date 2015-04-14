@@ -24,7 +24,7 @@ def main():
             irc.send(pong)
             print pong
         try:
-            if line.split(" ")[3][1] == conf['cominit']: # or line.split(" ")[3][1:5] == "http":
+            if line.split(" ")[3][1] == conf['cominit']:
                 command = line.split(" ")[3][2:]
                 if command[0:4] == "bot-":
                     if ircFunc.getUsername(line) in conf['admins'].split(" "):
@@ -35,7 +35,11 @@ def main():
                                 conf = mainFunc.getConfig()
                                 functions = mainFunc.getFunctions()
                                 modules = mainFunc.getModules()
-                                ircFunc.ircSay(ircFunc.getMsgto(line), 'Configuration reloaded...', irc)
+                                if conf['nick'] == ircFunc.getMsgto(line): 
+                                    msgto = ircFunc.getUsername(line)
+                                else:
+                                    msgto = ircFunc.getMsgto(line)
+                                ircFunc.ircSay(msgto, 'Configuration reloaded...', irc)
                             elif command == "update":
                                 ircFunc.ircSay(ircFunc.getMsgto(line), 'Shutting down for updates...', irc)
                                 mainFunc.cleanConfig()
@@ -52,9 +56,13 @@ def main():
                                 time.sleep(1)
                                 exit()
                             elif command == "pull":
-                                ircFunc.ircSay(ircFunc.getMsgto(line), 'Pulling from github...', irc)
+                                if conf['nick'] == ircFunc.getMsgto(line): 
+                                    msgto = ircFunc.getUsername(line)
+                                else:
+                                    msgto = ircFunc.getMsgto(line)
+                                ircFunc.ircSay(msgto, 'Pulling from github...', irc)
                                 os.system('git pull')
-                                ircFunc.ircSay(ircFunc.getMsgto(line), 'Done pulling from github...', irc)
+                                ircFunc.ircSay(msgto, 'Done pulling from github...', irc)
                 else:
                     try:
                         command = command.strip()

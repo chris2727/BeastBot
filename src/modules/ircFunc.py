@@ -45,15 +45,15 @@ def ircMessage(line, whl=False):
     conf = mainFunc.getConfig()
     splitline = line.split(" :")
     try:
-        message = splitline[1]
-        message = message.split(" ")
+        origmessage = splitline[1]
+        message = origmessage.split(" ")
         username = getUsername(line)
         if getMsgto(line) == conf['nick']: #privmsg
             msgto = username
         else:
             msgto = getMsgto(line)
         if whl:
-            whole = message.split(" ", 1)[1]
+            whole = origmessage.split(" ", 1)[1]
             return message, whole, username, msgto
         return message, username, msgto
     except IndexError as e:

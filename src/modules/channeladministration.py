@@ -1,6 +1,7 @@
 import ConfigParser
 import ircFunc, mainFunc
 import errorhandling
+import re
 
 def init():
     config = ConfigParser.ConfigParser()
@@ -23,7 +24,7 @@ def init():
 init()
 
 def mode(line, irc):
-    message, whole, username, msgto = ircMessage(line, whl=True)
+    message, whole, username, msgto = ircFunc.ircMessage(line, whl=True)
     conf = mainFunc.getConfig()
     if username in conf['admins'].split(" "):
         if (ircFunc.isRegged(username, irc)):
@@ -67,7 +68,8 @@ def kickuser(line, irc):
     if username in conf['admins'].split(" "):
         if (ircFunc.isRegged(username, irc)):
             try:
-                irc.send("KICK %s %s\n" % (msgto, message[1]))
+                msg = ' '.join(map(str,message[2:]))
+                irc.send("KICK %s %s %s\n" % (msgto, message[1], msg))
             except IndexError as e:
                 errorhandling.errorlog('information', e, line)
             except Exception as e:
@@ -80,8 +82,11 @@ def opuser(line, irc):
         if (ircFunc.isRegged(username, irc)):
             try:
                 if message[1]:
-                    ircFunc.ircMode(msgto, "+o "+message[1], irc)
-                    print message[1]
+                    users = ' '.join(map(str,message[1:]))
+                    users = users.strip()
+                    count = len(users.split(" "))
+                    num = 'o'*count
+                    ircFunc.ircMode(msgto, "+"+num+" "+users, irc)
             except IndexError:
                 ircFunc.ircMode(msgto, "+o "+username, irc)
             except Exception as e:
@@ -93,8 +98,10 @@ def deopuser(line, irc):
         if (ircFunc.isRegged(username, irc)):
             try:
                 if message[1]:
-                    ircFunc.ircMode(msgto, "-o "+message[1], irc)
-                    print message[1]
+                    users = ' '.join(map(str,message[1:]))
+                    count = len(users.split(" "))
+                    num = 'o'*count
+                    ircFunc.ircMode(msgto, "-"+num+" "+users, irc)
             except IndexError:
                 ircFunc.ircMode(msgto, "-o "+username, irc)
             except Exception as e:
@@ -106,8 +113,10 @@ def hopuser(line, irc):
         if (ircFunc.isRegged(username, irc)):
             try:
                 if message[1]:
-                    ircFunc.ircMode(msgto, "+h "+message[1], irc)
-                    print message[1]
+                    users = ' '.join(map(str,message[1:]))
+                    count = len(users.split(" "))
+                    num = 'h'*count
+                    ircFunc.ircMode(msgto, "+"+num+" "+users, irc)
             except IndexError:
                 ircFunc.ircMode(msgto, "+h "+username, irc)
             except Exception as e:
@@ -119,8 +128,10 @@ def dehopuser(line, irc):
         if (ircFunc.isRegged(username, irc)):
             try:
                 if message[1]:
-                    ircFunc.ircMode(msgto, "-h "+message[1], irc)
-                    print message[1]
+                    users = ' '.join(map(str,message[1:]))
+                    count = len(users.split(" "))
+                    num = 'h'*count
+                    ircFunc.ircMode(msgto, "-"+num+" "+users, irc)
             except IndexError:
                 ircFunc.ircMode(msgto, "-h "+username, irc)
             except Exception as e:
@@ -134,8 +145,11 @@ def devoiceuser(line, irc):
         if (ircFunc.isRegged(username, irc)):
             try:
                 if message[1]:
-                    ircFunc.ircMode(msgto, "-v "+message[1], irc)
-                    print message[1]
+                    users = ' '.join(map(str,message[1:]))
+                    users = users.strip()
+                    count = len(users.split(" "))
+                    num = 'v'*count
+                    ircFunc.ircMode(msgto, "-"+num+" "+users, irc)
             except IndexError:
                 ircFunc.ircMode(msgto, "-v "+username, irc)
             except Exception as e:
@@ -148,8 +162,11 @@ def voiceuser(line, irc):
         if (ircFunc.isRegged(username, irc)):
             try:
                 if message[1]:
-                    ircFunc.ircMode(msgto, "+v "+message[1], irc)
-                    print message[1]
+                    users = ' '.join(map(str,message[1:]))
+                    users = users.strip()
+                    count = len(users.split(" "))
+                    num = 'v'*count
+                    ircFunc.ircMode(msgto, "+"+num+" "+users, irc)
             except IndexError:
                 ircFunc.ircMode(msgto, "+v "+username, irc)
             except Exception as e:
