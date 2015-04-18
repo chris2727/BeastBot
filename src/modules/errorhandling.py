@@ -54,8 +54,8 @@ def errorlog(option, message, additional = None):
 def loginfo(info):
     info = str(info)
     date = time.strftime("%d-%m-%Y")
-    time = time.strftime("%H:%M:%S")
+    logtime = time.strftime("%H:%M:%S")
     file = open("log/%s.log" %(date), 'a')
-    output = time+" - "+info
+    output = logtime+" - "+info
     file.write(output+"\n")
     file.close()
