@@ -1,8 +1,10 @@
 import ConfigParser
 import urllib
 import json
-import ircFunc, mainFunc
+import ircFunc
+import mainFunc
 import errorhandling
+
 
 def init():
     modulename = "urban"
@@ -16,6 +18,7 @@ def init():
         config.write(configfile)
 
 init()
+
 
 def urban(line, irc):
     conf = mainFunc.getConfig()
@@ -31,10 +34,10 @@ def urban(line, irc):
                 definition = "The coolest god damn person you will ever fucking know...."
                 thumbsup = "99999999999"
                 thumbsdown = "0"
-                output = msg+": "+definition+" Up:"+thumbsup+" Down: "+thumbsdown
+                output = msg + ": " + definition + " Up:" + thumbsup + " Down: " + thumbsdown
                 ircFunc.ircSay(msgto, output, irc)
             else:
-                url = 'http://api.urbandictionary.com/v0/define?term='+whole
+                url = 'http://api.urbandictionary.com/v0/define?term=' + whole
                 info = urllib.urlopen(url)
                 data = json.loads(info.read())
                 try:
@@ -44,14 +47,14 @@ def urban(line, irc):
                     thumbsdown = str(thumbsdown)
                     thumbsup = str(thumbsup)
                     msg = whole.strip()
-                    output = msg+": "+definition+" Up:"+thumbsup+" Down: "+thumbsdown
+                    output = msg + ": " + definition + " Up:" + thumbsup + " Down: " + thumbsdown
                     ircFunc.ircSay(msgto, output, irc)
                 except IndexError:
-                    ircFunc.ircSay(msgto, 'No definition for: '+whole, irc)
+                    ircFunc.ircSay(msgto, 'No definition for: ' + whole, irc)
                 except Exception, e:
                     errorhandling.errorlog('critical', e, line)
     except NameError:
-        output = username+" is a dumbass and didn't enter a term to search for...."
+        output = username + " is a dumbass and didn't enter a term to search for...."
         print output
         ircFunc.ircSay(msgto, output, irc)
     except Exception, e:
