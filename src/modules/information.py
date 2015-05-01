@@ -1,6 +1,8 @@
 import ConfigParser
-import ircFunc, mainFunc
+import ircFunc
+import mainFunc
 import errorhandling
+
 
 def init():
     config = ConfigParser.ConfigParser()
@@ -9,11 +11,12 @@ def init():
     config.set('Functions', 'showip', 'information.showip')
     config.set('Functions', 'about', 'information.about')
     config.set('Functions', 'commands', 'information.commands')
-    config.set('Functions', 'help', 'information.help')
+    config.set('Functions', 'help', 'information.commands')
     with open('conf/beastbot.conf', 'wb') as configfile:
         config.write(configfile)
 
 init()
+
 
 def commands(line, irc):
     message, username, msgto = ircFunc.ircMessage(line)
@@ -24,6 +27,7 @@ def commands(line, irc):
             ircFunc.ircSay(username, i, irc)
     except Exception as e:
         errorhandling.errorlog('critical', e, line)
+
 
 def help(line, irc):
     message, username, msgto = ircFunc.ircMessage(line)
@@ -43,9 +47,10 @@ def about(line, irc):
     except Exception, e:
         errorhandling.errorlog('critical', e, line)
 
+
 def showip(line, irc):
     message, username, msgto = ircFunc.ircMessage(line)
     try:
-        ircFunc.ircSay(msgto, username+", my ip address appears to be 127.0.0.1", irc)
+        ircFunc.ircSay(msgto, username + ", my ip address appears to be 127.0.0.1", irc)
     except Exception, e:
         errorhandling.errorlog('critical', e, line)
