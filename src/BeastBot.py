@@ -47,7 +47,7 @@ def main():
                                     mainFunc.cleanConfig()
                                     irc.close()
                                     time.sleep(3)
-                                    os.system('python pullupdates.py')
+                                    os.system('./pullupdates.sh')
                                     # Bot should not hit this line
                                     errorhandling.errorlog('critical', 'Error pulling updates.')
                                     exit()
