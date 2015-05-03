@@ -27,6 +27,6 @@ def announceInit(line, irc):
             except IndexError:
                 if msgto == conf['tempnick']:
                     msgto = username
-                ircFunc.ircSay(msgto, 'You did not enter a announcement to make...', irc)
+                ircFunc.ircSay(msgto, 'You did not enter a announcement to make', irc)
             except Exception as e:
                 errorhandling.errorlog('critical', e, line)

@@ -32,8 +32,8 @@ def urban(line, irc):
             msg2 = message[1].lower()
             if msg2.strip() in conf['admins'].lower().split(" "):
                 msg = message[1].strip()
-                definition = "The coolest god damn person you will ever fucking know...."
-                thumbsup = "99999999999"
+                definition = "The coolest god damn person you will ever know!"
+                thumbsup = "1337"
                 thumbsdown = "0"
                 output = msg + ": " + definition + " Up:" + thumbsup + " Down: " + thumbsdown
                 ircFunc.ircSay(msgto, output, irc)
@@ -55,7 +55,7 @@ def urban(line, irc):
                 except Exception, e:
                     errorhandling.errorlog('critical', e, line)
     except NameError:
-        output = username + " is a dumbass and didn't enter a term to search for...."
+        output = "Please enter a search term"
         print output
         ircFunc.ircSay(msgto, output, irc)
     except Exception, e:
