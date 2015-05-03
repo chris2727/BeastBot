@@ -12,18 +12,20 @@ def main():
     while True:
         try:
             line = irc.recv(512)
-        except:
-            print "IRC Socket Disconnected"
+        except Exception as e:
+            # print "IRC Socket Disconnected"
+            errorhandling.errorlog('information', e, 'Bot disconnected')
             exit()
 
-        if line:
-            print line
+        # if line:
+        #   print line
+        # Commented out sense we usually do not have to see what the bot sees.
 
         if line[0:4] == "PING":
             splitline = line.split(" :")
             pong = "PONG %s" % splitline[1]
             irc.send(pong)
-            print pong
+            # print pong
         try:
             if ircFunc.getUsername(line) not in conf['botbanned'].split(" "):
                 if line.split(" ")[3][1] == conf['cominit']:

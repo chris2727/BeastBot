@@ -13,6 +13,7 @@ def init():
     config.set('Modules', 'urban', 'loaded')
     config.set('Functions', 'ud', 'urban.urban')
     config.set('Functions', 'urban', 'urban.urban')
+    config.set('Functions', 'wtf', 'urban.urban')
 
     with open('conf/beastbot.conf', 'wb') as configfile:
         config.write(configfile)
