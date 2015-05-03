@@ -38,6 +38,7 @@ def set(line, irc):
                             CurrentAdmins = mainFunc.getConfig()
                             CurrentAdmins = CurrentAdmins['admins']
                             NewAdmins = str(CurrentAdmins) + ' ' + str(message[3])
+                            NewAdmins = NewAdmins.lower()
                             config.set('Main', 'admins', NewAdmins)
                             with open('conf/beastbot.conf', 'wb') as configfile:
                                 config.write(configfile)
