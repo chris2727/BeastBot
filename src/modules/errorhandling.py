@@ -34,7 +34,7 @@ def log(level, message, info, additional=None):
         additional = additional.strip('\n').strip('\r')
     except Exception:
         pass
-    date = time.strftime("%d-%m-%Y")
+    date = time.strftime("%Y-%m-%d") # this is the global standard
     file = open('log/%s.log' % (date), 'a')
     log = level
     log = log + ' - ' + time.strftime("%H:%M:%S")
@@ -58,7 +58,7 @@ def errorlog(option, message, additional=None):
 
 def loginfo(info):
     info = str(info)
-    date = time.strftime("%d-%m-%Y")
+    date = time.strftime("%Y-%m-%d") # this is the global standard
     logtime = time.strftime("%H:%M:%S")
     file = open("log/%s.log" % (date), 'a')
     output = logtime + " - " + info

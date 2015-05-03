@@ -80,7 +80,7 @@ def main():
                         try:
                             command = command.strip()
                             function = functions[command]
-                            functionProc = Process(target=eval(function), args=(line, irc,))
+                            functionProc = Process(target=eval(function), args=(line.strip(), irc,))
                             functionProc.daemon = True
                             functionProc.start()
                             functionProc.join()

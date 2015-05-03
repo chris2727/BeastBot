@@ -39,7 +39,7 @@ def urlparse(line, irc):
             title = title.strip()
             title = filter(lambda x: x in string.printable, title)
             title = title[0:100]
-            output = "Title: [" + title + "]"
+            output = "Title: [ " + title + " ]"
             ircFunc.ircSay(msgto, output, irc)
     except IndexError as e:
         errorhandling.errorlog('information', e, line)
