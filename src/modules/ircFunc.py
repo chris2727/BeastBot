@@ -96,7 +96,11 @@ def ircMessage(line, whl=False):
         else:
             msgto = getMsgto(line)
         if whl:
-            whole = origmessage.split(" ", 1)[1]
+            parts = origmessage.split(" ", 1)
+            if (len(parts) > 1):
+                whole = parts[1]
+            else:
+                whole = ""
             return message, whole, username, msgto
         return message, username, msgto
     except IndexError as e:
