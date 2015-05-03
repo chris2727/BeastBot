@@ -1,7 +1,5 @@
 * For kulver: slap module
 
-* For chris: convert conf to use sqlite
-
 * Dynamic loading of modules handled by sqlite db
 
 * Fix EOLError from multiprocessing when running on windows without cygwin
