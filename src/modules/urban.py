@@ -49,11 +49,14 @@ def urban(line, irc):
                     definition = data['list'][0]['definition'].replace("\n", " ").replace("\r", "")
                     thumbsup = data['list'][0]['thumbs_up']
                     thumbsdown = data['list'][0]['thumbs_down']
+                    example = data['list'][0]['example']
                     thumbsdown = str(thumbsdown)
                     thumbsup = str(thumbsup)
                     msg = whole.strip()
                     output = msg + ": " + definition + " Up: " + thumbsup + " Down: " + thumbsdown
                     ircFunc.ircSay(msgto, output, irc)
+                    if example or example!='':
+                        ircFunc.ircSay(msgto, 'Example, {0}'.format(example), irc)
                 except IndexError:
                     ircFunc.ircSay(msgto, 'No definition for: ' + whole, irc)
                 except ValueError:

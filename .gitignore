@@ -10,7 +10,7 @@ __pycache__/
 # BeastBot Configuration File
 conf/
 *beastbot.conf*
-__init.py__
+src/modules/__init.py__
 log/*.log
 
 # Distribution / packaging
