@@ -1,1 +1,1 @@
-__all__ =['announce', 'botadministration', 'channeladministration', 'errorhandling', 'information', 'ircFunc', 'isup', 'mainFunc', 'ruby', 'slap', 'testmodule', 'urban', 'urlparsing']
+__all__ =['errorhandling', 'seen', 'slap', 'testmodule', 'isup', 'ruby', 'channeladministration', 'ircFunc', 'botadministration', 'announce', 'mainFunc', 'information', 'urban', 'urlparsing']

@@ -22,8 +22,8 @@ def main():
             errorhandling.errorlog('information', e, 'Bot disconnected')
             exit()
 
-        if line:
-           print (line)
+        #if line:
+        #   print (line)
         # Commented out sense we usually do not have to see what the bot sees.
 
         if line[0:4] == "PING":
