@@ -1,13 +1,19 @@
+from __future__ import print_function
 import ConfigParser
 import re
 import time
 import os
 from multiprocessing import Process
+from sys import exit   #http://stackoverflow.com/a/6501134/4671205
 
 
 def main():
-    irc = mainFunc.CreateSocket()
     conf = mainFunc.getConfig()
+    print('Welcome to {0}.\n'.format(conf['nick']))
+
+    print('Connecting to {0}:{1}.'.format(conf['server'], conf['port']))
+    irc = mainFunc.CreateSocket()
+    print('Connected')
     functions = mainFunc.getFunctions()
     while True:
         try:
@@ -17,8 +23,8 @@ def main():
             errorhandling.errorlog('information', e, 'Bot disconnected')
             exit()
 
-        # if line:
-        #   print line
+        #if line:
+        #   print (line)
         # Commented out sense we usually do not have to see what the bot sees.
 
         if line[0:4] == "PING":
@@ -64,9 +70,11 @@ def main():
                                     exit()
                                 elif command == "quit":
                                     ircFunc.ircSay(ircFunc.getMsgto(line), 'Shutting down...', irc)
+                                    print('Shutting down the Bot....', end="")
                                     mainFunc.cleanConfig()
                                     irc.close()
                                     time.sleep(1)
+                                    print('Bye.')
                                     exit()
                                 elif command == "pull":
                                     if conf['nick'] == ircFunc.getMsgto(line):
@@ -89,6 +97,16 @@ def main():
                             pass
                         except Exception, e:
                             errorhandling.errorlog('critical', e)
+                elif line.split()[1] == 'PRIVMSG' and line.split()[2] != conf['nick']:#this is a PM, ignore.
+                    try:#doesn't log bot commands lines. Wonder if i will fix this or it doesn't matter.
+                        nick = re.search(':(.*)!', line.split()[0]).group(1)
+                        channel = line.split()[2]
+                        msg = ' '.join(line.split()[3:])[1:]
+                         
+                        function = functions['seen_record']
+                        functionProc = Process(target=eval(function), args=(nick, channel, msg, time.time())).start()
+                    except Exception, e:
+                        errorhandling.errorlog('critical', e)
                 elif line.split(" ")[3][1:5] == "http":
                     try:
                         function = functions['http']

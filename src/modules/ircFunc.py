@@ -59,7 +59,7 @@ def isRegged(nick, irc):
     while line is "":
         ircSay("NickServ", "STATUS %s " % (nick), irc)
         line = irc.recv(512)
-        print "REG TEST" + line
+        #print "REG TEST" + line
         if line.find("STATUS %s 3" % (nick)) != -1:
             return True
         else:
