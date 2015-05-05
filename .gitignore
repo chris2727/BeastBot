@@ -8,7 +8,7 @@ __pycache__/
 *.so
 
 # BeastBot Configuration File
-conf/beastbot.conf
+src/conf/beastbot.conf
 src/modules/__init.py__
 log/*.log
 
