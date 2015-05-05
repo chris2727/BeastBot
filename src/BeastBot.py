@@ -4,6 +4,7 @@ import re
 import time
 import os
 from multiprocessing import Process
+from sys import exit   #http://stackoverflow.com/a/6501134/4671205
 
 
 def main():
@@ -69,9 +70,11 @@ def main():
                                     exit()
                                 elif command == "quit":
                                     ircFunc.ircSay(ircFunc.getMsgto(line), 'Shutting down...', irc)
+                                    print('Shutting down the Bot....', end="")
                                     mainFunc.cleanConfig()
                                     irc.close()
                                     time.sleep(1)
+                                    print('Bye.')
                                     exit()
                                 elif command == "pull":
                                     if conf['nick'] == ircFunc.getMsgto(line):
@@ -95,7 +98,7 @@ def main():
                         except Exception, e:
                             errorhandling.errorlog('critical', e)
                 elif line.split()[1] == 'PRIVMSG' and line.split()[2] != conf['nick']:#this is a PM, ignore.
-                    try:
+                    try:#doesn't log bot commands lines. Wonder if i will fix this or it doesn't matter.
                         nick = re.search(':(.*)!', line.split()[0]).group(1)
                         channel = line.split()[2]
                         msg = ' '.join(line.split()[3:])[1:]

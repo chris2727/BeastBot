@@ -54,6 +54,8 @@ def seen(line, irc):
         ircFunc.ircSay(msgto, 'Sorry, i haven\'t seen {0} around.'.format(nick), irc)
     except IndexError as e:
         ircFunc.ircSay(msgto, '{0}, seen who?'.format(username), irc)
+    except Exception as e:
+        errorhandling.errorlog('critical', e, line)
 
 def set_seen_values(nick, channel, message, time):
     nick = nick.lower()
