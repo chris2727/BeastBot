@@ -7,10 +7,11 @@ __pycache__/
 # C extensions
 *.so
 
-# BeastBot Configuration File
+# BeastBot stuff
 conf/*.conf
 modules/__init.py__
 log/*.log
+db/*.db
 
 # Distribution / packaging
 .Python
