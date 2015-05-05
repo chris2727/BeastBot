@@ -10,7 +10,7 @@ def init():
     config.set('Modules', 'information', 'loaded')
     config.set('Functions', 'showip', 'information.showip')
     config.set('Functions', 'about', 'information.about')
-    config.set('Functions', 'commands', 'information.help')
+    config.set('Functions', 'commands', 'information.commands')
     config.set('Functions', 'help', 'information.help')
     with open('conf/beastbot.conf', 'wb') as configfile:
         config.write(configfile)
@@ -67,4 +67,23 @@ def showip(line, irc):
     try:
         ircFunc.ircSay(msgto, username + ", my ip address appears to be 127.0.0.1", irc)
     except Exception, e:
+        errorhandling.errorlog('critical', e, line)
+
+def commands(line, irc):
+    message, username, msgto = ircFunc.ircMessage(line)
+    conf = mainFunc.getConfig()
+    try:
+        functions = mainFunc.getFunctions()
+        commands = functions.keys()
+        admin_commands = []
+        other_commands = []
+        for command in commands:
+            if 'administration' in functions[command]:
+                admin_commands.append(command)
+            else:
+                other_commands.append(command)
+        ircFunc.ircSay(username, 'Here are the commands i recognise for any user: {0}.'.format(', '.join(other_commands)), irc)
+        ircFunc.ircSay(username, 'Admin Commands: {0}.'.format(', '.join(admin_commands)), irc)
+        ircFunc.ircSay(username, 'For help, do: \'!help *command*\' for more information on a command.', irc)
+    except Exception as e:
         errorhandling.errorlog('critical', e, line)
