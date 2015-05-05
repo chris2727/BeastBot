@@ -1,3 +1,7 @@
+'''
+    SEEN module for BeastBot
+'''
+
 import ConfigParser
 import ircFunc
 import mainFunc
@@ -49,7 +53,7 @@ def seen(line, irc):
             time_seen = values[2]
 
             timestamp = format_time(time_seen)
-            ircFunc.ircSay(msgto, 'I last saw {0} on {1} in {2} saying {3}'.format(nick, timestamp, channel, lastmsg), irc)
+            ircFunc.ircSay(msgto, 'I last saw {0} on {1} in {2} saying: "{3}"'.format(nick, timestamp, channel, lastmsg), irc)
     except TypeError as e:
         ircFunc.ircSay(msgto, 'Sorry, i haven\'t seen {0} around.'.format(nick), irc)
     except IndexError as e:
@@ -81,5 +85,5 @@ def get_seen_value(nick):
         return result
 
 def format_time(timestamp):
-    tformat = '%A %D %T %z'
+    tformat = '%Y-%m-%d @ %H:%M:%S'
     return datetime.datetime.fromtimestamp(timestamp).strftime(tformat)
