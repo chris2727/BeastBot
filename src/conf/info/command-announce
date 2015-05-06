@@ -1,3 +1,0 @@
-ANNOUNCE command
-Makes a announcement to all the channels that the bot is currently in
-Parameters: !announce *message*
