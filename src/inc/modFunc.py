@@ -1,3 +1,4 @@
+import imp
 import os
 import mainFunc
 import ircFunc
@@ -271,6 +272,10 @@ def LoadModule(name):
         if location not in sys.path:
             sys.path.append(location)
         importlib.import_module(name)
+        try:
+            mod = imp.load_source(name,"./%s%s.py" % (location, name))
+        except Exception as e:
+            errorhandling.inputError('critical', e, 'could not reload')
         print name + ' has been loaded succesfuly'
         return True
 

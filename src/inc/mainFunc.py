@@ -17,4 +17,3 @@ def Auth(username, nickname, realname, irc):
     irc.send('NICK %s\r\n' % nickname)
     configFunc.setBotConf('tempnickname', nickname)
     irc.send('USER %s %s %s :%s\r\n' % (username, nickname, nickname, realname))
-
