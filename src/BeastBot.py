@@ -147,6 +147,29 @@ def main():
                     functionProc = Process(target=privlog.input, args=(line,))
                     functionProc.daemon = True
                     functionProc.start()
+            if line.split()[1] == 'PRIVMSG' and line.split()[2] != conf['tempnickname']:#this is a PM, ignore.
+                try:
+                    command = 'seen_record'
+                    mod, function = modFunc.getCommand(command, loaded=True)
+                    # Checks if the module is loaded
+                    if mod != False:
+                        nick = re.search(':(.*)!', line.lower().split()[0]).group(1)
+                        nick = nick.strip()
+                        channel = line.lower().split()[2]
+                        msg = ' '.join(line.lower().split()[3:])[1:]
+                        try:
+                            functionProc = Process(target=getattr(module[mod], function), args=(nick, channel, msg, time.time()))
+                            functionProc.daemon = True
+                            functionProc.start()
+                        except KeyError:
+                            module[mod] = importlib.import_module(mod)
+                            functionProc = Process(target=getattr(module[mod], function), args=(nick, channel, msg, time.time()))
+                            functionProc.daemon = True
+                            functionProc.start()
+                        except Exception as e:
+                            errorhandling.inputError('critical', e, line)
+                except Exception, e:
+                    errorhandling.inputError('critical', e)
         except IndexError:
             # Command does not exist
             pass
