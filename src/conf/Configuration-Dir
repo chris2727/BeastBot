@@ -1,0 +1,2 @@
+Don't worry about pushing the configuration DataBase to git.
+If one does not exist it should be made automatically on the first run.
