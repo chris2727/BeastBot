@@ -2,8 +2,6 @@
     UrbanDictionary module for BeastBot
 '''
 
-print 'urban has been loaded'
-
 from inc import *
 import urllib
 import json

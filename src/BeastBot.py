@@ -108,6 +108,12 @@ def main():
                                         module = modFunc.reloadMods()
                                         print module
                                         ircFunc.ircSay(ircFunc.getMsgto(line), 'Done reloading all modules', irc)
+                                    elif command == 'modmanage-load':
+                                        result = modFunc.LoadModule('modmanagement')
+                                        if result == True:
+                                            ircFunc.ircSay(msgto, 'Module has been loaded successfully', irc)
+                                        else:
+                                            ircFunc.ircSay(msgto, 'Either the module does not exist or something went wrong and it was NOT loaded successfully.', irc)
                                     elif command == 'purge':
                                         errorhandling.inputInfo("STARTING THY PURGE!!!!!!!! : Command directed by: " + username)
                                         modFunc.purgeMods()
