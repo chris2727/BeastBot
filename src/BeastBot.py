@@ -26,8 +26,8 @@ def main():
         Commented out sense we usually do not have to see what the bot sees.
         Used for testing and debugging purposes
         '''
-        #if line:
-        #    print line
+        if line:
+            print line
 
         if line[0:4] == "PING":
             # Receives PING from server and sends back PONG
