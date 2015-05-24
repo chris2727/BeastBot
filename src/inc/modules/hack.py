@@ -175,9 +175,9 @@ def hack(line, irc):
     phrase = build_phrase(random.choice(phrases))
     try:
         if message[1]:
-            nick = message[1]
+            nick = message[1].strip() + " "
             ircFunc.ircSay(msgto, '{0}: {1}'.format(nick, phrase), irc)
     except IndexError as e:
         ircFunc.ircSay(msgto, '{0}: {1}'.format(username, phrase), irc)
     except Exception as e:
-        errorhandling.errorlog('critical', e, line)
+        errorhandling.intputError('critical', e, line)
