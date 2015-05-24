@@ -1,3 +1,0 @@
-SET BOTBAN DEL command
-Deletes a user from the bot's banned list
-Parameters: !set botban del *nick*

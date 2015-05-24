@@ -1,27 +1,15 @@
-import ConfigParser
-import ircFunc
-import mainFunc
-import urllib
+from inc import *
 import urllib2
-import errorhandling
 import string
 import re
 
 
-def init():
-    config = ConfigParser.ConfigParser()
-    config.read('conf/beastbot.conf')
-    config.set('Modules', 'urlparsing', 'loaded')
-    config.set('Functions', 'http', 'urlparsing.urlparse')
-
-    with open('conf/beastbot.conf', 'wb') as configfile:
-        config.write(configfile)
-
-init()
+modFunc.addCommand('http', 'urlparsing', 'urlparse')
 
 
 def urlparse(line, irc):
     message, username, msgto = ircFunc.ircMessage(line)
+    message[0] = message[0].replace("!http", "http")
     try:
         sock = urllib2.urlopen(message[0], timeout=4)
         html = sock.read()
@@ -42,6 +30,6 @@ def urlparse(line, irc):
             output = "Title: [ " + title + " ]"
             ircFunc.ircSay(msgto, output, irc)
     except IndexError as e:
-        errorhandling.errorlog('information', e, line)
+        errorhandling.inputError('information', e, line)
     except Exception as e:
-        errorhandling.errorlog('critical', e, line)
+        errorhandling.inputError('critical', e, line)
