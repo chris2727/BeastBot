@@ -16,10 +16,7 @@ def main():
 
     while True:
         try:
-            # Read lines one by one of from the server
-            #sockfile = irc.makefile()
-            #line = sockfile.readline()
-            line = irc.recv(256)
+            line = irc.recv(512)
         except Exception as e:
             # Bot disconnected
             errorhandling.inputInfo('Bot disconnected unexpectedly')
@@ -29,8 +26,8 @@ def main():
         Commented out sense we usually do not have to see what the bot sees.
         Used for testing and debugging purposes
         '''
-        if line:
-            print line
+        #if line:
+        #    print line
 
         if line[0:4] == "PING":
             # Receives PING from server and sends back PONG
@@ -39,7 +36,7 @@ def main():
         try:
             # Checks if user is banned from using the bot. If not it proceeds
             username = ircFunc.getUsername(line).lower()
-            if username not in conf['botbanned']:
+            if username.lower() not in conf['botbanned'].lower().split(" "):
                 # Checks if the command starts with the command initializer
                 if line.split(" ")[3][1:5] == "http":
                     try:
@@ -78,7 +75,6 @@ def main():
                                 if ircFunc.isRegged(username, irc):
                                     # makes sure user is identified with nickserv
                                     if command == 'quit':
-                                        print 'quiting....'
                                         errorhandling.inputInfo('Quiting: Command directed by: ' + username)
                                         irc.close()
                                         exit()
@@ -106,7 +102,6 @@ def main():
                                     elif command == 'reload':
                                         del module
                                         module = modFunc.reloadMods()
-                                        print module
                                         ircFunc.ircSay(ircFunc.getMsgto(line), 'Done reloading all modules', irc)
                                     elif command == 'modmanage-load':
                                         result = modFunc.LoadModule('modmanagement')

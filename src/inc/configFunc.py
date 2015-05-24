@@ -53,8 +53,6 @@ def ensureConf():
             break
         errorhandling.inputInfo('Done inserting default values')
         errorhandling.inputInfo('Done creating configuration database')
-        # code for sql :/
-        # first need a defined tempalte to work with
 
 
 
@@ -81,7 +79,7 @@ def getBotConf(option):
         row = cur.fetchone()
         break
     if row == None:
-        errorhandling.inputError(level, 'botconf option doesnt exist', ':/')
+        errorhandling.inputError('warning', 'botconf option doesnt exist', 'Option: %s' % option)
     else:
         if row[0] == None:
             row[0] = ''

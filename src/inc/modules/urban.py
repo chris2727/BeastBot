@@ -12,7 +12,6 @@ modFunc.addCommand('urban', 'urban', 'urban')
 modFunc.addCommand('wtf', 'urban', 'urban')
 
 def urban(line, irc):
-    print 'running urban'
     splitline = line.split(" :")
     message, whole, username, msgto = ircFunc.ircMessage(line.strip(), whl=True)
     try:

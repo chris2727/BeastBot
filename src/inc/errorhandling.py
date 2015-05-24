@@ -68,22 +68,28 @@ def ensureAccessDir():
         os.system('mkdir log/AccessViolations/%s' % date)
 
 
-def inputAccess(info, additional=False):
-    message, whole, username, msgto = ircFunc.ircMessage(info, whl=True)
-    message = ' '.join(message)
-    message = str(message)
-    username = username.strip().replace("\n", '')
-    message = message.strip().replace("\n", '')
-    info = str(info)
-    info = info.strip().replace("\n", "")
+def inputAccess(info=False, line=False, username=False):
     date = time.strftime("%Y-%m-%d")
     logtime = time.strftime("%H:%M:%S")
     ensureAccessDir()
+    if line != False:
+        message, whole, username, msgto = ircFunc.ircMessage(line, whl=True)
+        message = ' '.join(message)
+        message = str(message)
+        username = username.strip().replace("\n", '')
+        message = message.strip().replace("\n", '')
+        line = str(line)
+        line = line.strip().replace("\n", "")
+        output = 'INVALID-ACCESS: ' + logtime + " - Username: " + username
+        output = output + " - Command: " + message + " - MsgTo: " + msgto
+        if info is not False: 
+            output = output + " - Reason: " + info
+        output = output + " ---- Raw: " + line
+    else:
+        output = 'INVALID-ACCESS: ' + logtime + " - Username: " + username
+        if info is not False:
+            output = output + " - Reason: " + info
+
     file = open("log/AccessViolations/%s/%s-INVALID-ACCESS.log" % (date, username), 'a')
-    output = 'INVALID-ACCESS: ' + logtime + " - Username: " + username
-    output = output + " - Command: " + message + " - MsgTo: " + msgto
-    if additional is not False:
-        output = output + " - Additional: " + additional
-    output = output + " ---- Raw: " + info
     file.write(output + "\n")
     file.close()

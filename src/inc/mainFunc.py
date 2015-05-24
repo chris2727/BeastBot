@@ -9,6 +9,7 @@ import configFunc
 
 def CreateSocket(server, port):
     irc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    irc.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
     irc.connect((server, int(port)))
     return irc
 

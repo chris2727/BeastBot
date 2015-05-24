@@ -177,7 +177,6 @@ def reloadMods():
             sys.path.append(location)
         module[modname] = importlib.import_module(modname)
         print "Reloaded: " + modname + " from: " + location
-    print module
     return module
 
 def defaultManage(name=None, mode=None):
@@ -255,20 +254,16 @@ def LoadModule(name):
         cur.execute("SELECT location, name FROM modules WHERE name='" + name + "' AND exist=1 LIMIT 1")
         row = cur.fetchone()
         break
-    print 'after first con'
     if row == None:
         return False
     else:
-        print 'mod exists, loading it....'
         location = row[0]
         name = str(row[1])
         con = sqlite3.connect('conf/conf.db')
-        print 'right before con 2'
         with con:
             cur = con.cursor()
             cur.execute("UPDATE modules SET loaded=1 WHERE name='%s'" % (name))
             con.commit()
-        print 'after second con'
         if location not in sys.path:
             sys.path.append(location)
         importlib.import_module(name)
@@ -306,4 +301,3 @@ def UnloadModule(name):
         cur.execute("UPDATE modules SET loaded=0 WHERE name='%s'" % name)
         con.commit()
         break
-    print 'mod unloaded'

@@ -9,7 +9,6 @@ modFunc.addCommand('mod', 'modmanagement', 'modmanage')
 
 
 def modmanage(line, irc):
-    print 'mod was ran hopefully'
     message, whole, username, msgto = ircFunc.ircMessage(line.strip(), whl=True)
     usernamel = username.lower()
     if usernamel in configFunc.getBotConf('botadmins').split(" "):
@@ -38,10 +37,12 @@ def modmanage(line, irc):
                     try:
                         if message[2] == 'add':
                             if message[3]:
+                                ircFunc.ircSay(msgto, message[3].strip() + ' added to the default load list', irc)
                                 modFunc.defaultManage(message[3].strip(), 'add')
                                 ircFunc.ircSay(msgto, message[3].strip() + ' added to the default load list', irc)
                         if message[2] == 'del':
                             if message[3]:
+                                ircFunc.ircSay(msgto, message[3].strip() + ' removed to the default load list', irc)
                                 modFunc.defaultManage(message[3].strip(), 'del')
                                 ircFunc.ircSay(msgto, message[3].strip() + ' removed to the default load list', irc)
                         if message[2] == 'list':
@@ -70,7 +71,7 @@ def modmanage(line, irc):
                     elif message[2].strip() == 'exist':
                         mods = modFunc.listMods('exist')
                         ircFunc.ircSay(msgto, mods, irc)
-                    elif message[2].strip() == 'default':
+                    elif message[2].strip() == 'default' or message[2].strip() == 'defaultload':
                         modlist = modFunc.defaultManage(message[3].strip(), 'list')
                         output = username + ', the default module load list is: ' + modlist
                         ircFunc.ircSay(msgto, output, irc)
