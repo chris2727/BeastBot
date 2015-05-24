@@ -57,7 +57,7 @@ def isRegged(nick, irc, sentline=False):
         #ready = select.select([irc], [], [], 3)
         #if ready[0]:
         #line = irc.recv(256)
-        line = irc2.recv(512)
+        line = irc2.recv(256)
         if ("STATUS %s" % nick) in line and getUsername(line).lower() == 'nickserv':
             received = True
     print "REG TEST" + line
