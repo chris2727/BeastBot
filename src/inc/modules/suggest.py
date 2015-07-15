@@ -11,7 +11,7 @@ def suggest(line, irc):
     combinedMsg = ' '.join(message[1:])
     numArgs = len(message) - 1
     if numArgs > 0 and combinedMsg.strip() != "":
-        f = open('suggestions.txt' , 'a') #You must use 'a' so it won't remove previous things you have logged in the file.
+        f = open('suggestions.txt' , 'a') 
         f.write(combinedMsg)
         f.close()
         ircFunc.ircSay(username, '%s, thank you for your suggestion... It has been documented and will be reviewed. :)' % username, irc)
