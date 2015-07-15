@@ -32,6 +32,16 @@ def main():
         if line[0:4] == "PING":
             # Receives PING from server and sends back PONG
             irc.send("PONG " + line.split(" :")[1])
+        elif re.search("PING :", line):
+            irc.send("PONG " + line.split(" :")[1])
+            try:
+                # Sometimes ping messages get sent on the same line.
+                irc.send("PONG " + line.split(" :")[2])
+            except IndexError:
+                pass
+                # This is normal
+            except Exception as e:
+                errorhandling.inputError('critical', e, line)
 
         try:
             # Checks if user is banned from using the bot. If not it proceeds
@@ -83,7 +93,7 @@ def main():
                                         errorhandling.inputInfo('Shutting down for updates: Command directed by: ' + username)
                                         irc.close()
                                         os.system('./pullupdates.sh')
-                                        # Bkulveot shouldnt go past this point
+                                        # Bot shouldnt go past this point
                                         errorhandling.inputError('critical', 'Bot failed updating by command. Reached the line it wasnt suppose to.', line)
                                         exit()
                                     elif command == 'restart':
@@ -133,7 +143,7 @@ def main():
                     time.sleep(30)
                     errorhandling.inputInfo("Reconnecting now....")
                     # Connect to the socket
-                    irc = mainFunc.CreateSocket((conf['server'], conf['port']))
+                    irc = mainFunc.CreateSocket(conf['server'], conf['port'])
                     # Authenticate to the IRC server
                     mainFunc.Auth(conf['username'], conf['nickname'], conf['realname'], irc)
             msgto = ircFunc.getMsgto(line, convert=False)

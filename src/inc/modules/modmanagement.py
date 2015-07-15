@@ -1,83 +1,103 @@
 '''
-    ModManagement module for BeastBot
+
+Module Management module for BeastBot
+
 '''
 
 from inc import *
 
+modFunc.addCommand('mod-load', 'modmanagement', 'modLoad')
+modFunc.addCommand('mod-list', 'modmanagement', 'modList')
+modFunc.addCommand('mod-default', 'modmanagement', 'modDef')
+modFunc.addCommand('mod-def', 'modmanagement', 'modDef')
+modFunc.addCommand('mod-unload', 'modmanagement', 'modUnload')
 
-modFunc.addCommand('mod', 'modmanagement', 'modmanage')
+def modList(line, irc):
+	message, username, msgto = ircFunc.ircMessage(line.strip())
+	if username.lower() in configFunc.getBotConf('botadmins').split(" "):
+		if (ircFunc.isRegged(username.lower(), irc)):
+			numArgs = len(message) - 1
+			if numArgs > 0:
+				if message[1].strip() == 'loaded':
+					loadedMods = modFunc.listMods('loaded')
+					ircFunc.ircSay(msgto, 'Loaded Modules: %s' % loadedMods, irc)
+				elif message[1].strip() == 'unloaded':
+					unloadedMods = modFunc.listMods('unloaded')
+					ircFunc.ircSay(msgto, 'Unloaded Modules: %s' % unloadedMods, irc)
+				elif message[1].strip() == 'default':
+					defaultMods = modFunc.defaultManage()
+					ircFunc.ircSay(msgto, 'Modules loaded by default: %s' % defaultMods, irc)
+				elif message[1].strip() == 'all':
+					existMods = modFunc.listMods('exist')
+					ircFunc.ircSay(msgto, 'Existant Modules: %s' % existMods, irc)
+				else:
+					ircFunc.ircSay(msgto, 'Parameters for this command are: loaded, unloaded, default, all', irc)
+			else:
+					ircFunc.ircSay(msgto, 'Parameters for this command are: loaded, unloaded, default, all', irc)
 
+def modLoad(line, irc):
+	message, username, msgto = ircFunc.ircMessage(line.strip())
+	if username.lower() in configFunc.getBotConf('botadmins').split(" "):
+		if (ircFunc.isRegged(username.lower(), irc)):
+			numArgs = len(message) - 1
+			if numArgs > 0:
+				if message[1].strip() != "":
+					result = modFunc.LoadModule(message[1].strip())
+					if result:
+						ircFunc.ircSay(msgto, 'Module (%s) has been loaded successfully' % message[1].strip(), irc)
+					else:
+						ircFunc.ircSay(msgto, 'Could not load module: %s. It either does not exist, or something went wrong.' % message[1].strip(), irc)
+				else:
+					ircFunc.ircSay(msgto, '%s, you must specify a module to load.' % username, irc)
+			else:
+				ircFunc.ircSay(msgto, '%s, you must specify a module to load.' % username, irc)
+				
 
-def modmanage(line, irc):
-    message, whole, username, msgto = ircFunc.ircMessage(line.strip(), whl=True)
-    usernamel = username.lower()
-    if usernamel in configFunc.getBotConf('botadmins').split(" "):
-        if (ircFunc.isRegged(usernamel, irc)):
-            try:
-                if message[1].strip() == 'load':
-                    try:                
-                        if message[2].strip() != "":
-                            result = modFunc.LoadModule(message[2].strip())
-                            if result == True:
-                                ircFunc.ircSay(msgto, 'Module has been loaded successfully', irc)
-                            else:
-                                ircFunc.ircSay(msgto, 'Either the module does not exist or something went wrong and it was NOT loaded successfully.', irc)
-                    except IndexError:
-                        ircFunc.ircSay(msgto, 'You did not enter a module to load')
-                    except Exception as e:
-                        errorhandling.inputError('critical', e, line)
-                elif message[1].strip() == 'unload':
-                    try:
-                        if message[2].strip() != "":
-                            modFunc.UnloadModule(message[2].strip())
-                            ircFunc.ircSay(msgto, 'Module (' + message[2].strip() + ') has been unloaded successfully', irc)
-                    except IndexError:
-                        ircFunc.ircSay(msgto, 'You did not enter a module to unload')
-                elif message[1].strip() == 'defaultload':
-                    try:
-                        if message[2] == 'add':
-                            if message[3]:
-                                ircFunc.ircSay(msgto, message[3].strip() + ' added to the default load list', irc)
-                                modFunc.defaultManage(message[3].strip(), 'add')
-                                ircFunc.ircSay(msgto, message[3].strip() + ' added to the default load list', irc)
-                        if message[2] == 'del':
-                            if message[3]:
-                                ircFunc.ircSay(msgto, message[3].strip() + ' removed to the default load list', irc)
-                                modFunc.defaultManage(message[3].strip(), 'del')
-                                ircFunc.ircSay(msgto, message[3].strip() + ' removed to the default load list', irc)
-                        if message[2] == 'list':
-                            modlist = modFunc.defaultManage(message[2].strip(), 'list')
-                            output = username + ', the default module load list is: ' + modlist
-                            ircFunc.ircSay(msgto, output, irc)
-                    except IndexError:
-                        ircFunc.ircSay(msgto, 'Command parameters are: add, del, list', irc)
-                    except Exception as e:
-                        errorhandling.inputError('critical', e, line)
-                elif message[1].strip() == 'list':
-                    try:
-                        if message[2].strip is not "":
-                            message[2] == 'loaded'
-                    except Exception:
-                        message[2] == 'loaded'
-                    if message[2].strip() == 'all':
-                        mods = modFunc.listMods('all')
-                        ircFunc.ircSay(msgto, mods, irc)
-                    elif message[2].strip() == 'loaded':
-                        mods = modFunc.listMods('loaded')
-                        ircFunc.ircSay(msgto, mods, irc)
-                    elif message[2].strip() == 'unloaded':
-                        mods = modFunc.listMods('unloaded')
-                        ircFunc.ircSay(msgto, mods, irc)
-                    elif message[2].strip() == 'exist':
-                        mods = modFunc.listMods('exist')
-                        ircFunc.ircSay(msgto, mods, irc)
-                    elif message[2].strip() == 'default' or message[2].strip() == 'defaultload':
-                        modlist = modFunc.defaultManage(message[3].strip(), 'list')
-                        output = username + ', the default module load list is: ' + modlist
-                        ircFunc.ircSay(msgto, output, irc)
-                else:
-                    ircFunc.ircSay(msgto, 'Command parameters are: load, unload, defaultload, list', irc)
-            except IndexError:
-                ircFunc.ircSay(msgto, 'Command parameters are: load, unload, defaultload, list', irc)
-            except Exception as e:
-                errorhandling.inputError('critical', e, line)
+def modUnload(line, irc):
+	message, username, msgto = ircFunc.ircMessage(line.strip())
+	if username.lower() in configFunc.getBotConf('botadmins').split(" "):
+		if (ircFunc.isRegged(username.lower(), irc)):
+			numArgs = len(message) - 1
+			if numArgs > 0:
+				if message[1].strip() != "":
+					modFunc.UnloadModule(message[1].strip())
+					ircFunc.ircSay(msgto, 'Module has been unloaded.', irc)
+				else:
+					ircFunc.ircSay(msgto, 'You must specify a module to unload.', irc)
+			else:
+				ircFunc.ircSay(msgto, 'You must specify a module to unload.', irc)
+				
+
+def modDef(line, irc):
+	message, username, msgto = ircFunc.ircMessage(line.strip())
+	if username.lower() in configFunc.getBotConf('botadmins').split(" "):
+		if (ircFunc.isRegged(username.lower(), irc)):
+			numArgs = len(message) - 1
+			if numArgs > 1:
+				if message[1].strip() == 'add':
+					modFunc.defaultManage(message[2].strip(), 'add')
+					ircFunc.ircSay(msgto, '%s, has been added to the Default Load List.' % message[2].strip(), irc)
+				elif message[1].strip() == 'del':
+					modFunc.defaultManage(message[2].strip(), 'del')
+					ircFunc.ircSay(msgto, '%s, has been removed from the Default Load List.' % message[2].strip(), irc)
+				else:
+					ircFunc.ircSay(msgto, 'The arguments for this command are: add <moduleName> OR del <moduleName>', irc)
+			else:
+				ircFunc.ircSay(msgto, 'The arguments for this command are: add <moduleName> OR del <moduleName>', irc)
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+				
+					

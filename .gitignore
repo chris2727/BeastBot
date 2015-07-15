@@ -12,6 +12,8 @@ conf/*.conf
 modules/__init.py__
 log/*.log
 db/*.db
+*.db
+*.log
 
 # Distribution / packaging
 .Python
