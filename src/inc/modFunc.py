@@ -180,19 +180,20 @@ def reloadMods():
     return module
 
 def defaultManage(name=None, mode=None):
+    returnvar = False
     con = sqlite3.connect('conf/conf.db')
     while con:
         cur = con.cursor()
         if mode == 'add':
             cur.execute("UPDATE modules SET defaultload=1 WHERE name='%s'" % name)
             con.commit()
-            break
             returnvar = True
+            break
         elif mode == 'del':
             cur.execute("UPDATE modules SET defaultload=0 WHERE name='%s'" % name)
             con.commit()
-            break
             returnvar = True
+            break
         else:
             cur.execute("SELECT name FROM modules WHERE defaultload=1")
             rows = cur.fetchall()

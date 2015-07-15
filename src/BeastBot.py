@@ -93,7 +93,7 @@ def main():
                                         errorhandling.inputInfo('Shutting down for updates: Command directed by: ' + username)
                                         irc.close()
                                         os.system('./pullupdates.sh')
-                                        # Bkulveot shouldnt go past this point
+                                        # Bot shouldnt go past this point
                                         errorhandling.inputError('critical', 'Bot failed updating by command. Reached the line it wasnt suppose to.', line)
                                         exit()
                                     elif command == 'restart':
