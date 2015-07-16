@@ -17,7 +17,7 @@ def get_questions(url):
     # find all questions linked to from a search
     # result page and return their URLs
     txt = requests.get(url).content
-    soup = BeautifulSoup(txt)
+    soup = BeautifulSoup(txt, 'lxml')
     questions = [link.get('href')
                  for link in soup.find_all('a')
                  if link.get('href') and
@@ -29,5 +29,7 @@ def get_questions(url):
 def sosearch(line, irc):
     # return all questions that are found based on a query
     message, username, msgto = ircFunc.ircMessage(line)
-    query = message[message.index(' ')+1:]
-    ircFunc.ircSay(msgto, '\n'.join(get_questions(get_search_url(query))), irc)
+    query = '+'.join(message[1:]).strip()
+    urls = get_questions(get_search_url(query))
+    for q in urls[:3]:
+        ircFunc.ircSay(msgto, q, irc)
