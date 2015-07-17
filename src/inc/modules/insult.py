@@ -55,4 +55,4 @@ def insult(line, irc):
     message, username, msgto = ircFunc.ircMessage(line)
     if message[1]:
         nick = message[1].strip()  # not sure about that, document your API!
-        ircFunc.ircSay(msgto, build_phrase(nick))
+        ircFunc.ircSay(msgto, build_phrase(nick), irc)
