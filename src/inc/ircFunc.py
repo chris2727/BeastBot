@@ -40,9 +40,23 @@ def ircNick(newnick, irc):
     irc.send("NICK %s\r\n" % (newnick))
     configFunc.setBotConf('tempnickname', newnick)
 
+
+def ensureRegDB():
+	import os
+	if not os.path.isfile('conf/reg.db'):
+		con = sqlite3.connect('conf/reg.db')
+		while con:
+			cur = con.cursor()
+			cur.execute('''CREATE TABLE entries
+				(nick TEXT,
+				status TEXT,
+				rec TEXT);''')
+			con.commit()
+			break
+
 def regStatus(nick):
 	nick = nick.lower()
-	con = sqlite3.connect('reg.db')
+	con = sqlite3.connect('conf/reg.db')
 	while con:
 		cur = con.cursor()
 		cur.execute("SELECT * FROM entries WHERE nick='%s'" % nick)
@@ -59,7 +73,7 @@ def regStatus(nick):
 
 def updateReg(nick, state):
 	nick = nick.lower()
-	con = sqlite3.connect('reg.db')
+	con = sqlite3.connect('conf/reg.db')
 	while con:
 		cur = con.cursor()
 		cur.execute("UPDATE entries SET status='%s' WHERE nick='%s'" % (state, nick))
@@ -69,7 +83,7 @@ def updateReg(nick, state):
 
 def regSetRec(nick, state):
 	nick = nick.lower()
-	con = sqlite3.connect('reg.db')
+	con = sqlite3.connect('conf/reg.db')
 	try:
 		while con:
 			cur = con.cursor()

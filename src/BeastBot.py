@@ -205,6 +205,7 @@ if __name__ == "__main__":
     from inc import *
     # Makes sure configuration exists and if not creates it
     configFunc.ensureConf()
+    ircFunc.ensureRegDB()
     # Cleans temp nick and chans
     configFunc.CleanTemps()
     # Sets modules exist to 0
