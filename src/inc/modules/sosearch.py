@@ -31,5 +31,5 @@ def sosearch(line, irc):
     message, username, msgto = ircFunc.ircMessage(line)
     query = '+'.join(message[1:]).strip()
     urls = get_questions(get_search_url(query))
-    for q in urls[:3]:
+    for q in urls[:1]:
         ircFunc.ircSay(msgto, q, irc)

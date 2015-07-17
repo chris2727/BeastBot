@@ -34,7 +34,10 @@ adjectives = [
 phrases = [
     'Shut up, {NICK}, you {adj} {noun}!',
     'Eat shit, {NICK}!',
-    'Why are you so {adj}, {NICK}, maybe you\'re just a {noun}?'
+    'Why are you so {adj}, {NICK}, maybe you\'re just a {noun}?',
+    'You are such a little {noun} {NICK}.',
+    'Why be a {adj} {noun}, {NICK}?',
+    '{NICK}, you {adj} {noun}.'
 ]
 
 
