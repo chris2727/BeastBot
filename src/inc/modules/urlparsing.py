@@ -4,15 +4,10 @@ import string
 import re
 
 
-modFunc.addCommand('http', 'urlparsing', 'urlparse')
-
-
-def urlparse(line, irc):
-    message, username, msgto = ircFunc.ircMessage(line)
-    message[0] = message[0].replace("!http", "http")
+def urlparse(url, msgto, irc):
     good = False
     try:
-        sock = urllib2.urlopen(message[0], timeout=4)
+        sock = urllib2.urlopen(url, timeout=4)
         html = sock.read()
         sock.close()
         start = html.find('<title>') + 7
@@ -31,6 +26,6 @@ def urlparse(line, irc):
             output = "Title: [ " + title + " ]"
             ircFunc.ircSay(msgto, output, irc)
     except IndexError as e:
-        errorhandling.inputError('information', e, line)
+        errorhandling.inputError('information', e, url)
     except Exception as e:
-        errorhandling.inputError('critical', e, line)
+        errorhandling.inputError('critical', e, url)

@@ -4,6 +4,7 @@ import os
 from multiprocessing import Process, Manager
 import sys
 import importlib
+from inc.modules.urlparsing import urlparse
 
 
 def main():
@@ -42,7 +43,7 @@ def main():
                 # This is normal
             except Exception as e:
                 errorhandling.inputError('critical', e, line)
-                
+
         if ("STATUS") in line and ircFunc.getUsername(line).lower() == 'nickserv':
             if re.search(" 3 " , line):
                 ircFunc.updateReg(line.split(" ")[4].strip(), True)
@@ -52,16 +53,20 @@ def main():
             # Checks if user is banned from using the bot. If not it proceeds
             username = ircFunc.getUsername(line).lower()
             if username.lower() not in conf['botbanned'].lower().split(" "):
+                # Checks whether something remotely looking like an URL is in
+                # the line.
+                if 'http://' in line:
+                    s = 0
+                    while s != -1:
+                        s = line.find('http://', s)
+                        e = line.find(' ', s)
+                        url = line[s:e].strip()
+                        message, username, msgto = ircFunc.ircMessage(line)
+                        urlparse(url, msgto, irc)
+                        s = e
                 # Checks if the command starts with the command initializer
-                if line.split(" ")[3][1:5] == "http":
-                    try:
-                        line = line.replace("http", "!http")
-                    except Exception:
-                        pass
                 if line.split(" ")[3][1] == conf['cominit']:
                     command = line.split(" ")[3][2:]
-                    if command[0:4] == 'http':
-                        command = 'http'
                     try:
                         command = command.strip()
                         # Gets information for the command to run
