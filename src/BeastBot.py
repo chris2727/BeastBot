@@ -55,6 +55,8 @@ def main():
             if username.lower() not in conf['botbanned'].lower().split(" "):
                 # Checks whether something remotely looking like an URL is in
                 # the line.
+                '''
+                BROKED
                 if 'http://' in line:
                     s = 0
                     while s != -1:
@@ -62,11 +64,19 @@ def main():
                         e = line.find(' ', s)
                         url = line[s:e].strip()
                         message, username, msgto = ircFunc.ircMessage(line)
-                        urlparse(url, msgto, irc)
+                        #urlparse(url, msgto, irc)
                         s = e
+				'''
                 # Checks if the command starts with the command initializer
+                 if line.split(" ")[3][1:5] == "http":
+					try:
+						line = line.replace("http", "!http")
+					except Exception:
+						pass
                 if line.split(" ")[3][1] == conf['cominit']:
                     command = line.split(" ")[3][2:]
+                    if command[0:4] == 'http':
+						command = 'http'
                     try:
                         command = command.strip()
                         # Gets information for the command to run
