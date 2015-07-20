@@ -66,17 +66,17 @@ def main():
                         message, username, msgto = ircFunc.ircMessage(line)
                         #urlparse(url, msgto, irc)
                         s = e
-				'''
+                '''
                 # Checks if the command starts with the command initializer
                  if line.split(" ")[3][1:5] == "http":
-					try:
-						line = line.replace("http", "!http")
-					except Exception:
-						pass
+                    try:
+                        line = line.replace("http", "!http")
+                    except Exception:
+                        pass
                 if line.split(" ")[3][1] == conf['cominit']:
                     command = line.split(" ")[3][2:]
                     if command[0:4] == 'http':
-						command = 'http'
+                        command = 'http'
                     try:
                         command = command.strip()
                         # Gets information for the command to run
