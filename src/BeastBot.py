@@ -68,8 +68,8 @@ def main():
                         s = e
                 '''
                 # Checks if the command starts with the command initializer
-                 if line.split(" ")[3][1:5] == "http":
-                    try:
+                if line.split(" ")[3][1:5] == "http":
+					try:
                         line = line.replace("http", "!http")
                     except Exception:
                         pass
