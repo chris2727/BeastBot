@@ -16,7 +16,7 @@ def input(log):
     log = log.strip('\r')
     log = log.strip('\n')
     username = ircFunc.getUsername(log)
-    #If makes sure sever is not sending message
+    # Makes sure sever is not sending message
     if " " not in username:
         ensureDir(username)
         date = time.strftime("%Y-%m-%d")
