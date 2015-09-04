@@ -29,6 +29,17 @@ def ScanFolderForMods():
     file.close()
     return imps
 
+def getHelp(command):
+	con = sqlite3.connect('conf/conf.db')
+	while con:
+		cur = con.cursor()
+		cur.execute("SELECT help FROM commands WHERE init='%s'" % command)
+		row = cur.fetchone()
+		break
+	if row == None:
+		return False
+	else:
+		return row[0]
 
 def getCommand(command, loaded=None):
     con = sqlite3.connect('conf/conf.db')
@@ -46,10 +57,10 @@ def getCommand(command, loaded=None):
         break
     if row == None:
         return False, False
-    elif row[0] == 1: # Means command is loaded
-        if row[4] == 1: # Means command is enabled
-            module = row[2]
-            function = row[3]
+    elif row[2] == 1: # Means command is loaded
+        if row[6] == 1: # Means command is enabled
+            module = row[4]
+            function = row[5]
             return module, function
     else:
         return False, False
@@ -88,7 +99,7 @@ def ScanModules():
     # Used at startup to find all modules and add to sql db if not already added... does not load them though
 
 
-def addCommand(command, module, function):
+def addCommand(command, module, function, perm='', helpInfo=''):
     con = sqlite3.connect('conf/conf.db')
     while con:
         cur = con.cursor()
@@ -108,7 +119,7 @@ def addCommand(command, module, function):
             con = sqlite3.connect('conf/conf.db')
             while con:
                 cur = con.cursor()
-                cur.execute("INSERT INTO commands VALUES(1, '%s', '%s', '%s', 1)" % (command, module, function))
+                cur.execute("INSERT INTO commands VALUES('%s', '%s', 1, '%s', '%s', '%s', 1)" % (helpInfo, perm, command, module, function))
                 con.commit()
                 break
     else:
@@ -116,6 +127,8 @@ def addCommand(command, module, function):
         while con:
             cur = con.cursor()
             cur.execute("UPDATE commands SET loaded=1 WHERE init='%s'" % command)
+            cur.execute("UPDATE commands SET help='%s' WHERE init='%s'" % (helpInfo, command))
+            cur.execute("UPDATE commands SET perm='%s' WHERE init='%s'" % (perm, command))
             con.commit()
             break
 
