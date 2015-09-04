@@ -19,6 +19,15 @@ def main():
     mainFunc.Auth(conf['username'], conf['nickname'], conf['realname'], irc)
     botRunning = True
     
+    # Loads the forum parser script
+    if os.path.isfile('inc/constantModules/forumparser.py'):
+        location = 'inc/constantModules'
+        sys.path.append(location)
+        forumparser = importlib.import_module('forumparser')
+        functionProc = Process(target=forumparser.startTheParser, args=(irc,))
+        functionProc.daemon = True
+        functionProc.start()
+        
     while botRunning:
         try:
             line = irc.recv(512)
@@ -309,4 +318,5 @@ if __name__ == "__main__":
     print '2'
     time.sleep(1)
     print '1'
+
     main()
