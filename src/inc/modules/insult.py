@@ -185,7 +185,11 @@ phrases = [
 ]
 
 
-def build_phrase(nick):
+def build_phrase(nick,username):
+	if nick == "me":
+		nick = username
+	else:
+		pass
     p = random.choice(phrases)
     while '{' in p:
         rep = p[p.index('{'):p.index('}')+1]
@@ -204,4 +208,4 @@ def insult(line, irc):
     message, username, msgto = ircFunc.ircMessage(line)
     if message[1]:
         nick = message[1].strip()  # not sure about that, document your API!
-        ircFunc.ircSay(msgto, build_phrase(nick), irc)
+        ircFunc.ircSay(msgto, build_phrase(nick,username), irc)
